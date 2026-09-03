@@ -1,0 +1,25 @@
+{
+  "matchCode": "EF56GH78",
+  "isPublic": false,
+  "createdAt": "2026-08-21T09:00:00Z",
+  "updatedAt": "2026-08-21T09:00:00Z",
+  "version": 0,
+  "sets": [],
+  "state": {
+    "status": "LIVE",
+    "pointsA": 0,
+    "pointsB": 0,
+    "gamesA": 0,
+    "gamesB": 0,
+    "setsA": 0,
+    "setsB": 0,
+    "isTieBreak": false,
+    "isSuperTieBreak": false,
+    "isMatchOver": false,
+    "playerAName": "Jogador A",
+    "playerBName": "Jogador B",
+    "currentServer": 0,
+    "pointDisplayA": "0",
+    "pointDisplayB": "0"
+  }
+}

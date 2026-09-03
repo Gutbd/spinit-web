@@ -1,0 +1,318 @@
+/* Layout is intentionally one responsive design (Part 4 §13) rather than separate mobile/desktop/TV
+   implementations — fluid sizing via clamp() covers phone portrait through TV viewing distance. */
+
+.scoreboard,
+.code-entry,
+.status-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 24px);
+  padding: clamp(16px, 4vw, 48px);
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.scoreboard-brand {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.scoreboard-winner {
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+  color: var(--accent-a);
+}
+
+.scoreboard-players {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: clamp(8px, 3vw, 24px);
+  padding: clamp(12px, 3vw, 24px);
+}
+
+.player-row:first-of-type {
+  border-bottom: 1px solid var(--border);
+}
+
+/* Column headers (Pontos | Games | Sets) — same grid as .player-row so the labels sit exactly
+   above each numeric column (FEATURE-007.1). */
+.scoreboard-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: clamp(8px, 3vw, 24px);
+  padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 24px);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.scoreboard-header .col-stat {
+  font-size: clamp(0.65rem, 1.4vw, 0.8rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  min-width: 2.5ch;
+}
+
+.player-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(1rem, 2.4vw, 1.4rem);
+  font-weight: 600;
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Per-player color identity — the same accent marks the name here and the player's Momentum lane. */
+.player-name.identity-a {
+  color: var(--accent-a);
+}
+
+.player-name.identity-b {
+  color: var(--accent-b);
+}
+
+.serving-dot {
+  flex-shrink: 0;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.player-sets,
+.player-games,
+.player-points {
+  min-width: 2.5ch;
+  text-align: center;
+}
+
+.player-sets,
+.player-games {
+  font-size: clamp(1rem, 2.4vw, 1.4rem);
+  color: var(--text-dim);
+}
+
+.player-points {
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5ch;
+  text-align: center;
+}
+
+.scoreboard-status-label {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  color: var(--accent-b);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Contextual pressure-moment banner — only rendered when a moment exists, so it never reserves
+   permanent space. Border/text take the highlighted player's identity color. */
+.important-moment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 18px);
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.important-moment-a {
+  color: var(--accent-a);
+}
+
+.important-moment-b {
+  color: var(--accent-b);
+}
+
+.important-moment-sep {
+  opacity: 0.6;
+}
+
+/* Complementary per-set history — secondary to the main scoreboard, not a replacement. */
+.set-history {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.set-history-title {
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.set-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.set-history-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 10px;
+  font-size: clamp(0.85rem, 1.9vw, 1rem);
+}
+
+.set-history-label {
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.set-history-score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.momentum {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.momentum-title {
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.momentum-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(0.75rem, 1.6vw, 0.9rem);
+}
+
+.momentum-label {
+  font-weight: 600;
+}
+
+/* Momentum lane identity matches the scoreboard: green = Player A (left), red = Player B (right). */
+.momentum-label-a {
+  color: var(--accent-a);
+}
+
+.momentum-label-b {
+  color: var(--accent-b);
+}
+
+.momentum-track {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.momentum-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.momentum-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+/* Color only. The fill's side (which half of the track it grows into) is set inline by
+   MomentumMeter so it always follows the leading player's own label — see the component. */
+.momentum-fill-a {
+  background: var(--accent-a);
+}
+
+.momentum-fill-b {
+  background: var(--accent-b);
+}
+
+.stale-banner {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding: 6px 12px;
+  text-align: center;
+}
+
+.code-entry form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.code-entry label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-align: left;
+}
+
+.code-entry input {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.code-entry button,
+.status-screen button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-a);
+  color: #0d0f14;
+  font-weight: 600;
+}
+
+.status-screen-hint {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}

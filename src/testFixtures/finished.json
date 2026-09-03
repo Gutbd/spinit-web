@@ -1,0 +1,28 @@
+{
+  "matchCode": "AB12CD34",
+  "isPublic": false,
+  "createdAt": "2026-08-21T10:00:00Z",
+  "updatedAt": "2026-08-21T11:02:10Z",
+  "version": 0,
+  "sets": [],
+  "state": {
+    "status": "FINISHED",
+    "pointsA": 0,
+    "pointsB": 0,
+    "gamesA": 0,
+    "gamesB": 0,
+    "setsA": 2,
+    "setsB": 0,
+    "isTieBreak": false,
+    "isSuperTieBreak": false,
+    "isMatchOver": true,
+    "matchWinner": 0,
+    "playerAName": "Ana",
+    "playerBName": "Bruna",
+    "currentServer": 1,
+    "pointDisplayA": "0",
+    "pointDisplayB": "0",
+    "statusLabel": null,
+    "recentScorers": [0, 0, 1, 0, 0]
+  }
+}

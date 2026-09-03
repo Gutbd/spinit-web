@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "spinit-ddc64"
+  },
+  "targets": {
+    "spinit-ddc64": {
+      "hosting": {
+        "live": [
+          "spinit-live"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

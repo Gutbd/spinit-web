@@ -1,0 +1,27 @@
+{
+  "matchCode": "AB12CD34",
+  "isPublic": false,
+  "createdAt": "2026-08-21T10:00:00Z",
+  "updatedAt": "2026-08-21T10:15:01Z",
+  "version": 0,
+  "sets": [],
+  "state": {
+    "status": "LIVE",
+    "pointsA": 2,
+    "pointsB": 2,
+    "gamesA": 4,
+    "gamesB": 3,
+    "setsA": 1,
+    "setsB": 0,
+    "isTieBreak": false,
+    "isSuperTieBreak": false,
+    "isMatchOver": false,
+    "playerAName": "Ana",
+    "playerBName": "Bruna",
+    "currentServer": 1,
+    "pointDisplayA": "30",
+    "pointDisplayB": "30",
+    "statusLabel": "DEUCE",
+    "recentScorers": [0, 1, 1, 0]
+  }
+}
