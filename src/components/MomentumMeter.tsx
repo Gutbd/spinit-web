@@ -7,7 +7,7 @@ import { toSpectatorMomentum } from "../contract/momentum";
  *
  * Visual identity follows the PLAYER, not a fixed side of the bar. Player A owns the teal accent
  * (`--accent-a`) and the LEFT half of the track — under Player A's own label; Player B owns the
- * red accent (`--accent-b`) and the RIGHT half — under Player B's own label. So when A leads (positive)
+ * blue accent (`--accent-b`) and the RIGHT half — under Player B's own label. So when A leads (positive)
  * the bar grows leftward toward A's name, and when B leads (negative) it grows rightward toward B's
  * name. The fill's `momentum-fill-{a,b}` class carries both the color and (via CSS) the correct
  * side; the FEATURE-007.1 fix corrected a prior inversion where A's fill grew toward B's label.

@@ -4,7 +4,11 @@
   --text: #f3f4f6;
   --text-dim: #9ca3af;
   --accent-a: #4dbf8b;
-  --accent-b: #ff4545;
+  /* Player B identity. Blue (the app's Training accent #29B6F6) — a vivid, distinct hue that reads
+     clearly against the dark surface. Replaced the previous red #ff4545, which in the thin Momentum
+     bar looked dim/grey and blurred into the empty (no-momentum) track. Not yellow: the app's own
+     primary accent is already yellow, so B must stay off that hue. */
+  --accent-b: #29b6f6;
   --border: #2e303a;
 
   color-scheme: dark;
