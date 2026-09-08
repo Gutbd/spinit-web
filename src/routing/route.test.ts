@@ -26,6 +26,31 @@ describe("parseRoute", () => {
   it("treats any other unknown path as code entry (no dedicated 404 page)", () => {
     expect(parseRoute("/something-else")).toEqual({ name: "codeEntry" });
   });
+
+  // FEATURE-008 — private Remote Scorekeeper invite route (App-only fallback on the Web).
+  it("routes /control-invite/{shareCode}/{token} extracting both parts", () => {
+    expect(parseRoute("/control-invite/DD098455/t0KhCYZ9iSZoeE7h-8kX2g")).toEqual({
+      name: "controlInvite",
+      shareCode: "DD098455",
+      token: "t0KhCYZ9iSZoeE7h-8kX2g",
+    });
+  });
+
+  it("routes /control-invite/{shareCode}/{token}/ (trailing slash)", () => {
+    expect(parseRoute("/control-invite/CODE/TOKEN/")).toEqual({
+      name: "controlInvite",
+      shareCode: "CODE",
+      token: "TOKEN",
+    });
+  });
+
+  it("does not treat a malformed /control-invite (missing token) as an invite", () => {
+    expect(parseRoute("/control-invite/only-one-part")).toEqual({ name: "codeEntry" });
+  });
+
+  it("keeps /live/{code} working alongside the new invite route", () => {
+    expect(parseRoute("/live/DD098455")).toEqual({ name: "live", rawCode: "DD098455" });
+  });
 });
 
 describe("liveRoutePath", () => {

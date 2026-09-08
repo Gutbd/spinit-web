@@ -33,6 +33,25 @@ export function InvalidCodeScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
+/**
+ * FEATURE-008 — a private scorekeeper invitation opened in a browser. Remote scorekeeping is
+ * App-only; the Web never exposes control functionality. This is a safe fallback that directs the
+ * user to the app. It never displays or logs the invite token (the credential lives only in the URL).
+ */
+export function ControlInviteAppOnlyScreen({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="status-screen">
+      <p>Este convite de marcação deve ser aberto no aplicativo SpinIt Track.</p>
+      <p className="status-screen-hint">
+        Instale ou abra o SpinIt Track no seu celular e toque novamente no link do convite.
+      </p>
+      <button type="button" onClick={onBack}>
+        Assistir a uma partida
+      </button>
+    </div>
+  );
+}
+
 export function ErrorScreen({ onBack }: { onBack: () => void }) {
   return (
     <div className="status-screen">

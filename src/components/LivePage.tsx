@@ -22,6 +22,8 @@ function ConnectedLivePage({ shareCode, onBack }: { shareCode: string; onBack: (
   const subscribe = useMemo(() => createFirestoreSubscribe(getDb()), []);
   const state = useLiveMatchViewer(subscribe, shareCode);
 
+  // FEATURE-008 Phase 3 — the Web is spectator-ONLY. Remote scorekeeping is private, authenticated,
+  // and App-only (invitation-based); the Web has no control path whatsoever.
   switch (state.type) {
     case "connecting":
       return <ConnectingScreen />;

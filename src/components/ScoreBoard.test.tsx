@@ -24,6 +24,17 @@ describe("ScoreBoard — smoke", () => {
 
     expect(screen.getByText(/venceu a partida/)).toBeInTheDocument();
   });
+
+  // FEATURE-008 Phase 3 — the Web is spectator-ONLY: the live view must expose no remote-control
+  // affordance (no "Assumir marcação", no interactive controls at all).
+  it("exposes no scorekeeper control affordance on a LIVE match", () => {
+    const spectator = toSpectatorState(liveFixture as RawLiveMatchDoc, "AB12CD34")!;
+    render(<ScoreBoard spectator={spectator} />);
+
+    expect(screen.queryByText(/assumir marcação/i)).toBeNull();
+    expect(screen.queryByText(/liberar marcação/i)).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+  });
 });
 
 describe("ScoreBoard — FEATURE-007.1 clarity", () => {
