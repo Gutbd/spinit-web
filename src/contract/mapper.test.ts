@@ -30,6 +30,8 @@ describe("toSpectatorState — canonical fixtures", () => {
       completedSets: [],
       importantMoment: null,
       pressureMomentPlayer: null,
+      // live.json also predates the match-timer fields -> null (clock simply hidden).
+      timer: null,
     });
   });
 
@@ -140,6 +142,40 @@ describe("toSpectatorState — FEATURE-007.1 important moments", () => {
       "AB12CD34",
     );
     expect(result?.pressureMomentPlayer).toBeNull();
+  });
+});
+
+describe("toSpectatorState — host-authoritative match timer", () => {
+  function docWith(stateExtra: Record<string, unknown>): RawLiveMatchDoc {
+    return { state: { ...((liveFixture as RawLiveMatchDoc).state as object), ...stateExtra } };
+  }
+
+  it("maps a RUNNING timer", () => {
+    const result = toSpectatorState(
+      docWith({ timerStartedAtMs: 1_000_000_000, timerPaused: false, timerElapsedMs: 90_000, timerRunning: true }),
+      "AB12CD34",
+    );
+    expect(result?.timer).toEqual({ startedAtMs: 1_000_000_000, paused: false, elapsedMs: 90_000, running: true });
+  });
+
+  it("maps an inactivity-PAUSED (frozen) timer", () => {
+    const result = toSpectatorState(
+      docWith({ timerStartedAtMs: 1_000_000_000, timerPaused: true, timerElapsedMs: 300_000, timerRunning: false }),
+      "AB12CD34",
+    );
+    expect(result?.timer).toEqual({ startedAtMs: 1_000_000_000, paused: true, elapsedMs: 300_000, running: false });
+  });
+
+  it("nulls the timer when the fields are absent (older docs) rather than fabricating one", () => {
+    expect(toSpectatorState(liveFixture as RawLiveMatchDoc, "AB12CD34")?.timer).toBeNull();
+  });
+
+  it("nulls the timer when a required timer field is missing/wrong-typed", () => {
+    const result = toSpectatorState(
+      docWith({ timerStartedAtMs: 1_000_000_000, timerPaused: false, timerElapsedMs: 90_000 /* timerRunning missing */ }),
+      "AB12CD34",
+    );
+    expect(result?.timer).toBeNull();
   });
 });
 

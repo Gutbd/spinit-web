@@ -1,6 +1,7 @@
 import type {
   CompletedSetView,
   ImportantMomentKind,
+  MatchTimerView,
   RawLiveMatchDoc,
   SpectatorState,
   SpectatorMatchStatus,
@@ -72,7 +73,22 @@ export function toSpectatorState(
     completedSets: asCompletedSets(state["completedSets"]),
     importantMoment: asImportantMoment(state["importantMoment"]),
     pressureMomentPlayer: asPlayerIndex(state["pressureMomentPlayer"]),
+    timer: asTimer(state),
   };
+}
+
+/**
+ * Parses the host-authoritative match timer (mirror of Android `Map.toLiveTimerState()`). Returns
+ * null when any of the four contract fields is absent/wrong-typed — i.e. an older doc — so the
+ * spectator simply omits the clock rather than fabricating a duration. Never recomputed here.
+ */
+function asTimer(state: Record<string, unknown>): MatchTimerView | null {
+  const startedAtMs = asInt(state["timerStartedAtMs"]);
+  const paused = asBoolean(state["timerPaused"]);
+  const elapsedMs = asInt(state["timerElapsedMs"]);
+  const running = asBoolean(state["timerRunning"]);
+  if (startedAtMs === null || paused === null || elapsedMs === null || running === null) return null;
+  return { startedAtMs, paused, elapsedMs, running };
 }
 
 function toStatus(value: unknown): SpectatorMatchStatus | null {

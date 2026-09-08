@@ -11,9 +11,11 @@ the Firestore `live_matches/{shareCode}` document; this project only reads it.
 Given a match's 8-character share code (or a pasted spectator link), show a live scoreboard —
 player names, labelled Pontos / Games / Sets columns, a per-set history of concluded sets, the
 current server, a compact last-5-points Momentum indicator, contextual Break / Set / Match Point
-indicators (FEATURE-007.1), and the final result when the match finishes. Nothing else: no
-analytics the host didn't publish, no controls, no way to affect the match — every value is
-computed by the Android host and only rendered here.
+indicators (FEATURE-007.1), the host-authoritative elapsed match clock (ticking while live,
+frozen with `· PAUSADO` during an inactivity auto-pause, final duration when finished), and the
+final result when the match finishes. Nothing else: no analytics the host didn't publish, no
+controls, no way to affect the match — every value is computed by the Android host and only
+rendered here.
 
 ## Local development
 
@@ -76,6 +78,15 @@ FEATURE-007 Implementation Part 4's cross-surface parity table for the verified 
 FEATURE-007.1 extended the published `state` with `completedSets` (per-set history),
 `importantMoment` (`"BREAK_POINT"`/`"SET_POINT"`/`"MATCH_POINT"`) and `pressureMomentPlayer`
 (`0`/`1`); the mapper defaults all three safely when absent, so older documents still render.
+
+The match-time surfaces change added the host-authoritative timer to `state`:
+`timerStartedAtMs`, `timerRunning`, `timerPaused` and `timerElapsedMs` (mirroring Android's
+`MatchTimerState`). The Web renders it verbatim — `running` ticks locally from
+`timerStartedAtMs` (the document is not rewritten every second), otherwise it shows
+`timerElapsedMs` frozen (`timerPaused` → inactivity auto-pause; `!timerPaused` → final duration).
+All four are read together in `src/contract/mapper.ts` and default to `null` (clock hidden) when
+absent, so older documents still render. No inactivity/timer logic runs on the Web — the host is
+the sole authority.
 
 ## Hosting
 

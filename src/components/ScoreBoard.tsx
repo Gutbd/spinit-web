@@ -1,4 +1,5 @@
 import type { SpectatorState } from "../contract/types";
+import { MatchClock } from "./MatchClock";
 import { MomentumMeter } from "./MomentumMeter";
 import { SetHistory } from "./SetHistory";
 import { ImportantMomentBanner } from "./ImportantMomentBanner";
@@ -6,10 +7,11 @@ import { ImportantMomentBanner } from "./ImportantMomentBanner";
 /**
  * The live scoreboard — primarily a scoreboard, not an analytics dashboard (Part 4 §12). Shows only
  * fields present in the canonical contract: no per-set history (not in the Firestore `state` map
- * today — see FEATURE-007.1 impact analysis), no service/return/break-point stats, no elapsed time.
+ * today — see FEATURE-007.1 impact analysis), no service/return/break-point stats. The one time
+ * field it does show is the host-authoritative match clock (`state.timer*`), rendered verbatim.
  *
  * FEATURE-007.1: adds explicit column headers (Pontos | Games | Sets) so the three numeric columns
- * are self-explanatory, and a per-player color identity (green = A, red = B) shared with the
+ * are self-explanatory, and a per-player color identity (green = A, blue = B) shared with the
  * Momentum meter — the same accent marks each player's name, serving dot, and Momentum lane.
  */
 export function ScoreBoard({ spectator }: { spectator: SpectatorState }) {
@@ -18,6 +20,8 @@ export function ScoreBoard({ spectator }: { spectator: SpectatorState }) {
   return (
     <section className="scoreboard" aria-live="polite">
       <div className="scoreboard-brand">SpinIt Track · Ao Vivo</div>
+
+      <MatchClock timer={spectator.timer} />
 
       {finished && spectator.matchWinner !== null && (
         <div className="scoreboard-winner">

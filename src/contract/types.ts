@@ -48,6 +48,22 @@ export interface SpectatorState {
   importantMoment: ImportantMomentKind | null;
   /** Player (0 = A, 1 = B) who owns the pressure moment, or null when there is none. */
   pressureMomentPlayer: number | null;
+  /** Host-authoritative match timer, or null on docs predating the feature (clock hidden then). */
+  timer: MatchTimerView | null;
+}
+
+/**
+ * Web-side mirror of Android's `MatchTimerState` (spinit-track MatchTimer.kt). The Android host is
+ * the SOLE timer authority; the Web renders this verbatim and runs no inactivity/timer logic:
+ *  - `running` → tick the clock from `startedAtMs` (`elapsed = now - startedAtMs`);
+ *  - otherwise → show `elapsedMs` frozen (`paused` = inactivity auto-pause → "· PAUSADO";
+ *    `!paused` = match finished → final duration).
+ */
+export interface MatchTimerView {
+  startedAtMs: number;
+  paused: boolean;
+  elapsedMs: number;
+  running: boolean;
 }
 
 /** Raw shape of a `live_matches/{shareCode}` Firestore document's `.data()`. Untyped at the
