@@ -4,6 +4,7 @@ import { useLiveMatchViewer } from "./useLiveMatchViewer";
 import type { LiveMatchSnapshot, SubscribeFn } from "./firebase/liveMatchReader";
 import liveFixture from "./testFixtures/live.json";
 import finishedFixture from "./testFixtures/finished.json";
+import scheduledFixture from "./testFixtures/scheduled.json";
 
 function fakeSubscribe(emit: (onResult: (s: LiveMatchSnapshot) => void) => void): {
   subscribe: SubscribeFn;
@@ -35,6 +36,34 @@ describe("useLiveMatchViewer", () => {
     const { result } = renderHook(() => useLiveMatchViewer(subscribe, "AB12CD34"));
 
     await waitFor(() => expect(result.current.type).toBe("finished"));
+  });
+
+  it("transitions to scheduled on an existing SCHEDULED snapshot", async () => {
+    const { subscribe } = fakeSubscribe((onResult) =>
+      onResult({ type: "exists", data: scheduledFixture, fromCache: false }),
+    );
+    const { result } = renderHook(() => useLiveMatchViewer(subscribe, "SC12CD34"));
+
+    await waitFor(() => expect(result.current.type).toBe("scheduled"));
+    expect(result.current).toMatchObject({
+      type: "scheduled",
+      scheduled: { playerAName: "João", playerBName: "Pedro" },
+    });
+  });
+
+  it("scheduled snapshot later becoming LIVE transitions scheduled -> live (same subscription)", async () => {
+    let deliver: ((s: LiveMatchSnapshot) => void) | undefined;
+    const subscribe: SubscribeFn = (_code, onResult) => {
+      deliver = onResult;
+      onResult({ type: "exists", data: scheduledFixture, fromCache: false });
+      return vi.fn();
+    };
+    const { result } = renderHook(() => useLiveMatchViewer(subscribe, "SC12CD34"));
+
+    await waitFor(() => expect(result.current.type).toBe("scheduled"));
+    // Android flips the SAME document to LIVE — the next snapshot drives the switch, no new listener.
+    deliver?.({ type: "exists", data: liveFixture, fromCache: false });
+    await waitFor(() => expect(result.current.type).toBe("live"));
   });
 
   it("transitions to notFound on a Missing snapshot", async () => {

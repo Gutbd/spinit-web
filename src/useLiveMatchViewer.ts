@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toSpectatorState } from "./contract/mapper";
-import type { SpectatorState } from "./contract/types";
+import { toScheduledState } from "./contract/scheduledMapper";
+import type { ScheduledState, SpectatorState } from "./contract/types";
 import type { SubscribeFn } from "./firebase/liveMatchReader";
 
 /**
@@ -11,6 +12,7 @@ import type { SubscribeFn } from "./firebase/liveMatchReader";
  */
 export type ViewerState =
   | { type: "connecting" }
+  | { type: "scheduled"; scheduled: ScheduledState; fromCache: boolean }
   | { type: "live"; spectator: SpectatorState; fromCache: boolean }
   | { type: "finished"; spectator: SpectatorState; fromCache: boolean }
   | { type: "notFound" }
@@ -35,6 +37,16 @@ export function useLiveMatchViewer(subscribe: SubscribeFn, shareCode: string): V
       }
       if (snapshot.type === "error") {
         setState({ type: "error" });
+        return;
+      }
+
+      // Pre-match: a SCHEDULED document has no score fields, so it maps to a distinct scheduled
+      // state. Checked before the live/finished mapper (which would reject a SCHEDULED doc as
+      // malformed). The SAME subscription drives SCHEDULED -> LIVE: once the host flips the doc to
+      // LIVE, the next snapshot falls through to toSpectatorState below — no new listener.
+      const scheduled = toScheduledState(snapshot.data, shareCode);
+      if (scheduled !== null) {
+        setState({ type: "scheduled", scheduled, fromCache: snapshot.fromCache });
         return;
       }
 

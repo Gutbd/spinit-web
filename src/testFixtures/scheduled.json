@@ -1,0 +1,22 @@
+{
+  "matchCode": "SC12CD34",
+  "isPublic": false,
+  "createdAt": "2026-09-01T10:00:00Z",
+  "updatedAt": "2026-09-01T10:00:00Z",
+  "version": 0,
+  "sets": [],
+  "state": {
+    "status": "SCHEDULED",
+    "playerAName": "João",
+    "playerBName": "Pedro",
+    "matchType": "BEST_OF_3",
+    "matchTypeLabel": "Melhor de 3",
+    "gamesPerSet": 6,
+    "tieBreakEnabled": true,
+    "finalSetRule": "SUPER_TIE_BREAK",
+    "firstServer": 0,
+    "scheduledAt": 1789000000000,
+    "championshipName": "Copa Arena",
+    "phase": "Semifinal"
+  }
+}

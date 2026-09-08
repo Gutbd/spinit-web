@@ -66,6 +66,25 @@ export interface MatchTimerView {
   running: boolean;
 }
 
+/**
+ * Pre-match view of a `live_matches/{shareCode}` document whose `state.status === "SCHEDULED"`
+ * (mirror of Android's `buildScheduledLiveState`). Carries only scheduling metadata — a SCHEDULED
+ * document has no score fields yet, so this is a distinct type from {@link SpectatorState}, not a
+ * status variant of it. Optional metadata (championship/phase) is `null` when absent; the Web never
+ * fabricates values.
+ */
+export interface ScheduledState {
+  shareCode: string;
+  playerAName: string;
+  playerBName: string;
+  /** Human-readable match format label (Android `matchTypeLabel`, e.g. "Melhor de 3"), or null. */
+  matchTypeLabel: string | null;
+  championshipName: string | null;
+  phase: string | null;
+  /** Intended kickoff time (epoch ms), or null if the host omitted it. */
+  scheduledAt: number | null;
+}
+
 /** Raw shape of a `live_matches/{shareCode}` Firestore document's `.data()`. Untyped at the
  * boundary on purpose — the mapper is what narrows it. */
 export type RawLiveMatchDoc = Record<string, unknown>;

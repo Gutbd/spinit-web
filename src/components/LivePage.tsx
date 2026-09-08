@@ -4,6 +4,7 @@ import { useLiveMatchViewer } from "../useLiveMatchViewer";
 import { createFirestoreSubscribe } from "../firebase/liveMatchReader";
 import { getDb } from "../firebase/config";
 import { ScoreBoard } from "./ScoreBoard";
+import { PreMatchScreen } from "./PreMatchScreen";
 import { ConnectingScreen, ErrorScreen, InvalidCodeScreen, NotFoundScreen } from "./StatusScreens";
 
 /** `/live/{shareCode}` — validates the code shape locally first (no Firestore query, and no
@@ -31,6 +32,17 @@ function ConnectedLivePage({ shareCode, onBack }: { shareCode: string; onBack: (
       return <NotFoundScreen onBack={onBack} />;
     case "error":
       return <ErrorScreen onBack={onBack} />;
+    case "scheduled":
+      return (
+        <>
+          {state.fromCache && (
+            <div className="stale-banner" role="status">
+              Reconectando…
+            </div>
+          )}
+          <PreMatchScreen scheduled={state.scheduled} />
+        </>
+      );
     case "live":
     case "finished":
       return (

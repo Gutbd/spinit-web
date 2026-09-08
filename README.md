@@ -58,7 +58,11 @@ it does not create a new Firebase project and does not touch Firestore data or r
 
 - `/` — minimal landing, routes to `/live` (no root-site redesign in scope).
 - `/live` — manual share-code entry (accepts a bare code or a pasted spectator URL).
-- `/live/{shareCode}` — connects to `live_matches/{shareCode}` and renders the live scoreboard.
+- `/live/{shareCode}` — connects to `live_matches/{shareCode}` and renders the live scoreboard. When
+  the document's `state.status` is `SCHEDULED`, it renders a pre-match page instead (championship,
+  phase, players, format, local scheduled date/time, a live countdown, and a `PARTIDA AGENDADA`
+  status); the same subscription switches to the live scoreboard automatically once the host flips
+  the document to `LIVE`.
 
 No `react-router` — only two real routes, handled by a ~20-line manual parser
 (`src/routing/route.ts`) plus a thin History-API hook (`src/routing/useRoute.ts`).
@@ -107,12 +111,42 @@ subdomain via a CNAME to `spinit-live.web.app`.
 
 **This is now live in production at `https://live.spinit.com.br`.** The one-time setup — creating
 the `spinit-live` site, applying the `live` target, adding the custom domain, and the DNS record —
-has already been done. Routine redeploys are just:
+has already been done.
+
+### Deploy (após dar push nas alterações)
+
+O deploy é **manual** — não há CI, então `git push` **não** publica nada por si só. O Firebase
+Hosting publica a pasta `dist/`, então é obrigatório rodar o build antes (sem ele você republica a
+versão anterior). A partir da raiz do repositório `spinit-web`:
 
 ```
-npm run build
+npm ci                 # (só na primeira vez ou quando package-lock.json mudar)
+npm run build          # gera dist/ (tsc -b && vite build)
 firebase deploy --only hosting:live --project spinit-ddc64
 ```
+
+Ou, em uma linha (build + deploy):
+
+```
+npm run build && firebase deploy --only hosting:live --project spinit-ddc64
+```
+
+Pré-requisitos (uma vez por máquina):
+
+- Firebase CLI instalado: `npm i -g firebase-tools` (ou use `npx firebase ...` sem instalar global).
+- Autenticado e com acesso ao projeto `spinit-ddc64`: `firebase login`.
+- `.env.local` preenchido com a config Web (ver **Environment variables** acima) — o build lê essas
+  variáveis; sem elas o app buildado não conecta ao Firestore.
+
+O projeto (`spinit-ddc64`) e o target (`live` → site `spinit-live`) já estão fixados em
+`.firebaserc`/`firebase.json`, então `--project spinit-ddc64` é apenas explícito e pode ser omitido.
+`--only hosting:live` garante publicar **só** este site — nunca Firestore, rules ou outros sites.
+
+Antes de publicar em produção, dá para revisar:
+
+- `npm run preview` — serve o `dist/` recém-buildado localmente.
+- `firebase hosting:channel:deploy <nome> --only live --project spinit-ddc64` — cria uma URL de
+  preview temporária (canal), sem afetar `live.spinit.com.br`.
 
 The initial site/target setup, for reference, was:
 

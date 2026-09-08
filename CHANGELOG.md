@@ -8,6 +8,35 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
+## [1.2.0] — 2026-09-08 — Scheduled (pre-match) view
+
+### Added
+- **Scheduled / pre-match view.** Opening a Live URL whose `live_matches/{shareCode}.state.status`
+  is `"SCHEDULED"` now renders a dedicated pre-match page instead of the live scoreboard: it shows
+  the championship (when present), phase/round (when present), Player A × Player B, the match format,
+  the local scheduled date/time, a bold **PARTIDA AGENDADA** status, and a live one-second countdown
+  (`Começa em 2d 04h 18min 32s`; days omitted under a day; `Horário previsto atingido` once reached —
+  never a negative value). The countdown is informational only — the Web never decides whether the
+  host may start (that rule lives on the Android host).
+  - **SCHEDULED → LIVE with no reload.** The pre-match page reacts to the SAME parent snapshot
+    subscription: when the host flips the existing document to `LIVE`, the page switches to the
+    existing live scoreboard automatically, same URL, no new listener. `LIVE → FINISHED` is
+    unchanged.
+  - Reuses the existing visual language (scoreboard cards, spacing, per-player identity colors) —
+    no redesign; mobile-first preserved.
+  - Contract: reads `status`, `playerAName`/`playerBName`, `matchTypeLabel`, `championshipName`,
+    `phase`, `scheduledAt` from `state` (mirrors Android `buildScheduledLiveState`); optional
+    metadata absent → `null`, never fabricated.
+  - `src/contract/types.ts` — new `ScheduledState`.
+  - `src/contract/scheduledMapper.ts` — `toScheduledState()` (returns null for non-SCHEDULED docs, so
+    LIVE/FINISHED/legacy fall through unchanged).
+  - `src/contract/scheduledCountdown.ts` — pure `formatScheduledCountdown` / `formatScheduledDateTime`.
+  - `src/components/PreMatchScreen.tsx` — the pre-match view + one-second ticking countdown.
+  - `src/useLiveMatchViewer.ts` — new `scheduled` viewer state, checked before the live/finished
+    mapper; `src/components/LivePage.tsx` renders it.
+- **Legacy safety:** documents without scheduled fields behave exactly as before — no regression to
+  LIVE/FINISHED, Momentum, important moments, the match clock, or the winner/final result.
+
 ## [1.1.0] — 2026-09-08 — Live match clock
 
 ### Added
