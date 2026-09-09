@@ -8,15 +8,35 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
-## [1.4.1] — 2026-09-09 — Fix duplicated TIE-BREAK label
+## [1.5.0] — 2026-09-09 — Match-info header above the score; tie-break is match context
+
+### Added
+- **Match-info header above the LIVE score.** Championship (when present), phase (when present) and
+  match format now render in a neutral header above the scoreboard, since they describe the match
+  itself. Reads new `state` fields from `live_matches/{shareCode}` — `matchType`, `matchTypeLabel`,
+  `championshipName`, `phase` (published by the Android host); all tolerant of absence (legacy docs →
+  header hidden). `src/contract/{types,mapper}.ts`, `src/components/ScoreBoard.tsx`, `src/App.css`.
+
+### Changed
+- **Tie-break is now match context, not a tag below the score.** A tie-break-only match shows its
+  format label in the header; a set tie-break (6–6 inside a normal match) shows a small "Tie-break" /
+  "Super Tie-break" context tag in the header (deduped against the format label via `matchType`). The
+  transient game state below the score keeps DEUCE / ADV but **never** shows a tie-break tag — which
+  also removes the earlier "TIE-BREAK over a 0–0 board" confusion at the start of a tie-break match.
+
+## [1.4.1] — 2026-09-09 — Fix TIE-BREAK label on the LIVE scoreboard
 
 ### Fixed
-- **The LIVE scoreboard showed the `TIE-BREAK` label twice** (visible at 0–0 when a tie-break starts).
-  The host already publishes `state.statusLabel` as `"TIE-BREAK"` / `"SUPER TIE-BREAK"` during a
-  tie-break, and the scoreboard rendered both that `statusLabel` **and** a separate derived tie-break
-  label. The derived label is now a fallback shown only when `statusLabel` is absent (legacy docs), so
-  the tie-break label appears exactly once. `src/components/ScoreBoard.tsx` only — no contract/logic
-  change.
+- **The LIVE scoreboard showed the `TIE-BREAK` label twice, and showed it over a 0–0 board at the
+  start of a tie-break match.** The host publishes `state.statusLabel` as `"TIE-BREAK"` /
+  `"SUPER TIE-BREAK"` during a tie-break, and the scoreboard rendered both that `statusLabel` **and** a
+  separate derived tie-break label (the duplicate), and did so even at the very start (all-zero score)
+  of a Tie-break / Super Tie-break match. The match-state label is now computed as a single value
+  (host `statusLabel`, falling back to a derived label only for legacy docs that omit it — so it can
+  never render twice), and the tie-break label is suppressed while the score is still all-zero, so it
+  no longer appears over a fresh 0–0 board — it shows once the first point is scored. `DEUCE`/`ADV`
+  and an in-set tie-break at 6–6 are unaffected. `src/components/ScoreBoard.tsx` only — no
+  contract/logic change.
 
 ## [1.4.0] — 2026-09-09 — Visual identity aligned with spinit-track
 

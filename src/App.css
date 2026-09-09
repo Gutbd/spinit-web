@@ -43,6 +43,47 @@
   color: var(--neon);
 }
 
+/* Match-info header — championship / phase / format (+ set tie-break context), above the score.
+   Neutral theme colors only; describes the match, so it never competes with the score below. */
+.scoreboard-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.6vh, 6px);
+  text-align: center;
+}
+
+.scoreboard-championship {
+  font-size: clamp(1rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.scoreboard-info-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.2vw, 14px);
+  font-size: clamp(0.75rem, 1.5vw, 1.1rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Dot separators between the sub-line chips. */
+.scoreboard-info-sub > * + *::before {
+  content: "·";
+  margin-right: clamp(6px, 1.2vw, 14px);
+  color: var(--border);
+}
+
+.scoreboard-tiebreak {
+  font-weight: 700;
+  color: var(--text);
+}
+
 .scoreboard-players {
   width: 100%;
   border: 1px solid var(--border);

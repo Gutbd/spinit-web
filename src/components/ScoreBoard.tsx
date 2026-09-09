@@ -10,12 +10,38 @@ import { ImportantMomentBanner } from "./ImportantMomentBanner";
  * today — see FEATURE-007.1 impact analysis), no service/return/break-point stats. The one time
  * field it does show is the host-authoritative match clock (`state.timer*`), rendered verbatim.
  *
- * FEATURE-007.1: adds explicit column headers (Pontos | Games | Sets) so the three numeric columns
- * are self-explanatory, and a per-player color identity (green = A, blue = B) shared with the
- * Momentum meter — the same accent marks each player's name, serving dot, and Momentum lane.
+ * Match info (championship / phase / format, and a set tie-break context tag) sits ABOVE the score as
+ * a header, since it describes the match itself; the transient game state (DEUCE / ADV) stays below,
+ * and a tie-break is never shown below (it belongs in the header). Player names are neutral; the
+ * server dot and the Momentum lanes carry the yellow/grey identity (matching spinit-track).
  */
 export function ScoreBoard({ spectator }: { spectator: SpectatorState }) {
   const finished = spectator.status === "FINISHED";
+
+  const tieBreakActive = spectator.isTieBreak || spectator.isSuperTieBreak;
+
+  // A tie-break is the match MODE for a tie-break-only match (the format label already says so), but
+  // just the current situation for a set tie-break inside a normal match. So the tie-break context tag
+  // in the header is shown ONLY for a set tie-break (normal match); a tie-break-only match relies on
+  // its format label instead, avoiding a duplicate. (Legacy docs without matchType fall back to
+  // showing the tag whenever a tie-break is active.)
+  const isTieBreakOnlyMatch =
+    spectator.matchType === "TIE_BREAK_ONLY" || spectator.matchType === "SUPER_TIE_BREAK_ONLY";
+  const tieBreakTag =
+    tieBreakActive && !finished && !isTieBreakOnlyMatch
+      ? spectator.isSuperTieBreak
+        ? "Super Tie-break"
+        : "Tie-break"
+      : null;
+
+  const hasMatchInfo = Boolean(
+    spectator.championshipName || spectator.phase || spectator.matchTypeLabel || tieBreakTag,
+  );
+
+  // Below-the-score label keeps the transient game state (DEUCE / ADV) — but NEVER a tie-break tag:
+  // when a tie-break is being played the format/tie-break context lives in the header above the score.
+  const belowStatusLabel =
+    !finished && !tieBreakActive ? spectator.statusLabel : null;
 
   return (
     <section className="scoreboard" aria-live="polite">
@@ -26,6 +52,23 @@ export function ScoreBoard({ spectator }: { spectator: SpectatorState }) {
       {finished && spectator.matchWinner !== null && (
         <div className="scoreboard-winner">
           {spectator.matchWinner === 0 ? spectator.playerAName : spectator.playerBName} venceu a partida
+        </div>
+      )}
+
+      {/* Match info — championship / phase / format (and a set tie-break context tag) — above the
+          score, since these describe the match itself rather than a momentary state. */}
+      {hasMatchInfo && (
+        <div className="scoreboard-info">
+          {spectator.championshipName && (
+            <span className="scoreboard-championship">{spectator.championshipName}</span>
+          )}
+          <div className="scoreboard-info-sub">
+            {spectator.phase && <span className="scoreboard-phase">{spectator.phase}</span>}
+            {spectator.matchTypeLabel && (
+              <span className="scoreboard-format">{spectator.matchTypeLabel}</span>
+            )}
+            {tieBreakTag && <span className="scoreboard-tiebreak">{tieBreakTag}</span>}
+          </div>
         </div>
       )}
 
@@ -63,19 +106,7 @@ export function ScoreBoard({ spectator }: { spectator: SpectatorState }) {
         />
       )}
 
-      {spectator.statusLabel && !finished && (
-        <div className="scoreboard-status-label">{spectator.statusLabel}</div>
-      )}
-
-      {/* Tie-break label — the host's statusLabel already reads "TIE-BREAK"/"SUPER TIE-BREAK" during a
-          tie-break (MatchState.statusLabel), so this dedicated label is a fallback for legacy docs that
-          omit statusLabel. Gated on `!statusLabel` to avoid showing the tie-break label twice (the
-          duplicate-label bug seen at 0–0). */}
-      {(spectator.isTieBreak || spectator.isSuperTieBreak) && !finished && !spectator.statusLabel && (
-        <div className="scoreboard-status-label">
-          {spectator.isSuperTieBreak ? "Super Tie-Break" : "Tie-Break"}
-        </div>
-      )}
+      {belowStatusLabel && <div className="scoreboard-status-label">{belowStatusLabel}</div>}
 
       <SetHistory completedSets={spectator.completedSets} />
 

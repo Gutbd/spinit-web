@@ -220,38 +220,110 @@ describe("ScoreBoard — responsive name rendering", () => {
   });
 });
 
-describe("ScoreBoard — tie-break label is not duplicated", () => {
-  function tieBreakDoc(statusLabel: string | null): RawLiveMatchDoc {
+describe("ScoreBoard — tie-break moves to the header, never below the score", () => {
+  function doc(opts: {
+    statusLabel?: string | null;
+    isTieBreak?: boolean;
+    isSuperTieBreak?: boolean;
+    matchType?: string;
+    matchTypeLabel?: string;
+    championshipName?: string;
+    phase?: string;
+    gamesA?: number;
+    gamesB?: number;
+  }): RawLiveMatchDoc {
     const state: Record<string, unknown> = {
       status: "LIVE",
       setsA: 0,
       setsB: 0,
-      gamesA: 6,
-      gamesB: 6,
-      isTieBreak: true,
-      isSuperTieBreak: false,
+      gamesA: opts.gamesA ?? 6,
+      gamesB: opts.gamesB ?? 6,
+      isTieBreak: opts.isTieBreak ?? true,
+      isSuperTieBreak: opts.isSuperTieBreak ?? false,
       isMatchOver: false,
       currentServer: 0,
       playerAName: "Ana",
       playerBName: "Bruna",
-      pointDisplayA: "0",
-      pointDisplayB: "0",
+      pointDisplayA: "3",
+      pointDisplayB: "1",
       recentScorers: [],
     };
-    if (statusLabel !== null) state.statusLabel = statusLabel;
+    if (opts.statusLabel != null) state.statusLabel = opts.statusLabel;
+    if (opts.matchType != null) state.matchType = opts.matchType;
+    if (opts.matchTypeLabel != null) state.matchTypeLabel = opts.matchTypeLabel;
+    if (opts.championshipName != null) state.championshipName = opts.championshipName;
+    if (opts.phase != null) state.phase = opts.phase;
     return { state };
   }
 
-  it("shows the tie-break label exactly once at 0–0 when the host publishes statusLabel", () => {
-    const spectator = toSpectatorState(tieBreakDoc("TIE-BREAK"), "AB12CD34")!;
+  it("shows a set tie-break as a context tag in the header, never below the score", () => {
+    const spectator = toSpectatorState(doc({ statusLabel: "TIE-BREAK", matchType: "BEST_OF_3" }), "AB12CD34")!;
     const { container } = render(<ScoreBoard spectator={spectator} />);
-    expect(screen.getAllByText(/tie-break/i)).toHaveLength(1);
-    expect(container.querySelectorAll(".scoreboard-status-label")).toHaveLength(1);
+    expect(container.querySelector(".scoreboard-info .scoreboard-tiebreak")?.textContent).toBe("Tie-break");
+    // Nothing tie-break below the score.
+    expect(container.querySelector(".scoreboard-status-label")).toBeNull();
   });
 
-  it("falls back to a single derived tie-break label for legacy docs without statusLabel", () => {
-    const spectator = toSpectatorState(tieBreakDoc(null), "AB12CD34")!;
-    render(<ScoreBoard spectator={spectator} />);
-    expect(screen.getAllByText(/tie-break/i)).toHaveLength(1);
+  it("does not duplicate: a tie-break-only match shows its format label, no separate tag", () => {
+    const spectator = toSpectatorState(
+      doc({ statusLabel: "TIE-BREAK", matchType: "TIE_BREAK_ONLY", matchTypeLabel: "Tie-break" }),
+      "AB12CD34",
+    )!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    expect(container.querySelector(".scoreboard-format")?.textContent).toBe("Tie-break");
+    expect(container.querySelector(".scoreboard-tiebreak")).toBeNull();
+    expect(container.querySelector(".scoreboard-status-label")).toBeNull();
+  });
+
+  it("still shows DEUCE below the score (only tie-break is excluded from below)", () => {
+    const spectator = toSpectatorState(
+      doc({ statusLabel: "DEUCE", isTieBreak: false, gamesA: 3, gamesB: 3 }),
+      "AB12CD34",
+    )!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    expect(container.querySelector(".scoreboard-status-label")?.textContent).toBe("DEUCE");
+  });
+});
+
+describe("ScoreBoard — match-info header", () => {
+  function liveDoc(extra: Record<string, unknown>): RawLiveMatchDoc {
+    return {
+      state: {
+        status: "LIVE",
+        setsA: 0,
+        setsB: 0,
+        gamesA: 1,
+        gamesB: 0,
+        isTieBreak: false,
+        isSuperTieBreak: false,
+        isMatchOver: false,
+        currentServer: 0,
+        playerAName: "Ana",
+        playerBName: "Bruna",
+        pointDisplayA: "15",
+        pointDisplayB: "0",
+        recentScorers: [],
+        ...extra,
+      },
+    };
+  }
+
+  it("renders championship, phase and format above the score", () => {
+    const spectator = toSpectatorState(
+      liveDoc({ championshipName: "Copa Arena", phase: "Semifinal", matchTypeLabel: "Melhor de 3" }),
+      "AB12CD34",
+    )!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    const info = container.querySelector(".scoreboard-info");
+    expect(info).not.toBeNull();
+    expect(info?.querySelector(".scoreboard-championship")?.textContent).toBe("Copa Arena");
+    expect(info?.querySelector(".scoreboard-phase")?.textContent).toBe("Semifinal");
+    expect(info?.querySelector(".scoreboard-format")?.textContent).toBe("Melhor de 3");
+  });
+
+  it("omits the header entirely when no match info is present (legacy docs)", () => {
+    const spectator = toSpectatorState(liveDoc({}), "AB12CD34")!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    expect(container.querySelector(".scoreboard-info")).toBeNull();
   });
 });

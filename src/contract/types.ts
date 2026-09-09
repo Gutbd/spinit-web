@@ -39,6 +39,16 @@ export interface SpectatorState {
   currentServer: number;
   matchWinner: number | null;
   statusLabel: string | null;
+  /** Match mode/type name (e.g. "BEST_OF_3", "TIE_BREAK_ONLY"), or null on docs that don't publish
+   * it. Used to tell a tie-break-only match (where the tie-break IS the format) from a set tie-break
+   * inside a normal match. */
+  matchType: string | null;
+  /** Human-readable match format (e.g. "Melhor de 3", "Tie-break"), or null when absent. */
+  matchTypeLabel: string | null;
+  /** Optional championship/tournament name shown in the match-info header, or null. */
+  championshipName: string | null;
+  /** Optional phase/round shown in the match-info header, or null. */
+  phase: string | null;
   /** Last up-to-5 scorers (0 = A, 1 = B), oldest -> newest. Empty when absent. */
   recentScorers: number[];
   /** Concluded sets only, oldest -> newest (FEATURE-007.1). The in-progress set is never here —

@@ -25,6 +25,11 @@ describe("toSpectatorState — canonical fixtures", () => {
       currentServer: 1,
       matchWinner: null,
       statusLabel: null,
+      // live.json predates the match-info fields -> null (header simply hidden).
+      matchType: null,
+      matchTypeLabel: null,
+      championshipName: null,
+      phase: null,
       recentScorers: [0, 1, 1, 0, 1],
       // live.json predates the FEATURE-007.1 fields, so they default safely (backward compat).
       completedSets: [],
