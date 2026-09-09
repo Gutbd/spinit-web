@@ -37,6 +37,25 @@ mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be update
 - **Legacy safety:** documents without scheduled fields behave exactly as before — no regression to
   LIVE/FINISHED, Momentum, important moments, the match clock, or the winner/final result.
 
+#### Pre-match presentation redesigned as a responsive public sports display
+
+The SCHEDULED screen is now a full-viewport, centered pre-match board that scales from a phone at
+arm's length to a venue TV several meters away — not a stretched mobile card.
+- **Responsive layout:** a bounded, centered content column (`max-width: min(1200px, 92vw)`) with
+  fluid `clamp()` typography/spacing; players stack vertically on phones and switch to a horizontal
+  `JOÃO × PEDRO` row on tablet/desktop/TV via a container query on the content column. Long player
+  names wrap/shrink gracefully (`overflow-wrap: anywhere`, `text-wrap: balance`) instead of breaking
+  the layout. `src/components/PreMatchScreen.tsx` + `src/App.css` (`.prematch*`) only.
+- **Hierarchy & color:** status → championship → phase → **players (main focus)** → format →
+  date/time → countdown. Hierarchy comes from typography/size/weight/spacing/contrast; only the
+  player names use the Player A/B identity colors — status, championship, phase, format, date/time
+  and countdown are neutral theme colors (Player B blue is no longer used for generic UI).
+- **Countdown:** seconds removed — `Começa em 2d 4h 18min` / `4h 18min` / `18min`, and
+  `Horário previsto atingido` once reached (never negative). Re-renders at minute granularity (30 s)
+  instead of every second. Date/time is now a compact `12 SET · 14:00`.
+- Unchanged: Firestore contract, scheduled mapper, SCHEDULED → LIVE transition, and the active
+  Live/FINISHED scoreboard.
+
 ## [1.1.0] — 2026-09-08 — Live match clock
 
 ### Added

@@ -44,4 +44,14 @@ describe("PreMatchScreen", () => {
     render(<PreMatchScreen scheduled={{ ...base, scheduledAt: Date.now() - 60_000 }} />);
     expect(screen.getByText("Horário previsto atingido")).toBeInTheDocument();
   });
+
+  it("renders long player names without dropping them (graceful, not truncated away)", () => {
+    const longA = "João Vítor de Albuquerque Cavalcanti";
+    const longB = "Pedro Henrique dos Santos Nascimento";
+    render(<PreMatchScreen scheduled={{ ...base, playerAName: longA, playerBName: longB }} />);
+    expect(screen.getByText(longA)).toBeInTheDocument();
+    expect(screen.getByText(longB)).toBeInTheDocument();
+    // Still a valid pre-match render alongside the long names.
+    expect(screen.getByText("PARTIDA AGENDADA")).toBeInTheDocument();
+  });
 });

@@ -142,53 +142,178 @@
   color: #ffb300;
 }
 
-/* Pre-match (SCHEDULED) view — reuses the scoreboard card/spacing/identity-color language rather
-   than a separate design (FEATURE — scheduled match). */
-.prematch-championship {
-  font-size: clamp(1.1rem, 2.6vw, 1.6rem);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--accent-a);
-}
-
-.prematch-phase {
-  font-size: clamp(0.85rem, 1.8vw, 1.05rem);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.prematch-players {
+/* ── Pre-match (SCHEDULED) view — responsive public sports display ───────────────────────────────
+   A full-viewport, centered pre-match board that scales from a phone at arm's length to a venue TV
+   several meters away. Reuses the SpinIt Live identity (background, tokens, typography, Player A/B
+   identity colors). Visual hierarchy comes from typography/size/weight/spacing/contrast — NOT from
+   coloring every line: only the player names use identity colors; all generic information
+   (status, championship, phase, format, date/time, countdown) uses neutral theme colors.
+   Sizing uses viewport-relative clamp() so it grows on large screens and stays bounded on ultra-wide
+   ones (content is capped by max-width and centered). Container query units (cqw) refine the layout
+   within the bounded content column. */
+.prematch {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: clamp(8px, 2.5vw, 20px);
-  font-size: clamp(1.3rem, 4vw, 2.2rem);
+  /* Safe spacing around every viewport edge; scales up on big screens. */
+  padding: clamp(20px, 5vh, 72px) clamp(16px, 5vw, 96px);
+  container-type: inline-size;
+}
+
+.prematch-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(14px, 3.2vh, 40px);
+  width: 100%;
+  /* Keep content balanced on ultra-wide/TV rather than spanning the full width. */
+  max-width: min(1200px, 92vw);
+}
+
+/* Small product eyebrow — same identity as the live scoreboard brand, kept subordinate. */
+.prematch-brand {
+  margin: 0;
+  font-size: clamp(0.7rem, 1.4vw, 1rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* (1) Neutral status. A pill so it reads as a state chip, not a colored headline. */
+.prematch-status {
+  margin: 0;
+  align-self: center;
+  font-size: clamp(0.8rem, 1.5vw, 1.15rem);
   font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: clamp(6px, 0.9vh, 12px) clamp(14px, 1.6vw, 26px);
+  background: var(--surface);
+}
+
+/* (2)(3) Championship + phase — context, clearly readable but subordinate to the players. */
+.prematch-context {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.6vh, 8px);
+}
+
+.prematch-championship {
+  margin: 0;
+  font-size: clamp(1.25rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.prematch-phase {
+  margin: 0;
+  font-size: clamp(0.85rem, 1.6vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* (4) Players — the main visual focus. Phone: stacked column (JOÃO / × / PEDRO). */
+.prematch-players {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.4vh, 18px);
+  width: 100%;
+}
+
+.prematch-player {
+  max-width: 100%;
+  font-size: clamp(2.6rem, 12vw, 6.5rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  /* Long names wrap/shrink gracefully instead of overflowing. */
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.prematch-player.identity-a {
+  color: var(--accent-a);
+}
+
+.prematch-player.identity-b {
+  color: var(--accent-b);
 }
 
 .prematch-vs {
+  font-size: clamp(1.2rem, 3.5vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1;
   color: var(--text-dim);
-  font-weight: 600;
+}
+
+/* (5)(6) Format · date/time — one neutral line. */
+.prematch-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1vw, 14px);
+  font-size: clamp(0.95rem, 2vw, 1.5rem);
+  color: var(--text-dim);
 }
 
 .prematch-format {
-  font-size: clamp(0.9rem, 2vw, 1.15rem);
-  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.prematch-meta-sep {
+  color: var(--border);
 }
 
 .prematch-datetime {
-  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--text);
 }
 
+/* (7) Countdown — large and readable on a TV, but neutral (never a player color). */
 .prematch-countdown {
-  font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+  margin: 0;
+  font-size: clamp(1.5rem, 4.5vw, 3.4rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--accent-b);
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+/* Tablet / desktop / TV: players go horizontal (JOÃO   ×   PEDRO) with more breathing room. Uses a
+   container query on the bounded content column so it reflects real available width, not just the
+   raw viewport. */
+@container (min-width: 620px) {
+  .prematch-players {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: clamp(20px, 4cqw, 72px);
+  }
+  .prematch-player {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    font-size: clamp(3rem, 11cqw, 7rem);
+  }
+  /* Keep each name in one line when the row layout has room; it wraps again only if truly too long. */
+  .prematch-vs {
+    flex: 0 0 auto;
+  }
 }
 
 /* Contextual pressure-moment banner — only rendered when a moment exists, so it never reserves
