@@ -45,6 +45,15 @@ describe("PreMatchScreen", () => {
     expect(screen.getByText("Horário previsto atingido")).toBeInTheDocument();
   });
 
+  it.each([
+    ["GUSTAVO", "ANDRÉ"],
+    ["FERNANDO", "GABRIEL"],
+  ])("renders both player names semantically: %s × %s", (a, b) => {
+    render(<PreMatchScreen scheduled={{ ...base, playerAName: a, playerBName: b }} />);
+    expect(screen.getByText(a)).toBeInTheDocument();
+    expect(screen.getByText(b)).toBeInTheDocument();
+  });
+
   it("renders long player names without dropping them (graceful, not truncated away)", () => {
     const longA = "João Vítor de Albuquerque Cavalcanti";
     const longB = "Pedro Henrique dos Santos Nascimento";

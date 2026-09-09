@@ -43,9 +43,15 @@ The SCHEDULED screen is now a full-viewport, centered pre-match board that scale
 arm's length to a venue TV several meters away — not a stretched mobile card.
 - **Responsive layout:** a bounded, centered content column (`max-width: min(1200px, 92vw)`) with
   fluid `clamp()` typography/spacing; players stack vertically on phones and switch to a horizontal
-  `JOÃO × PEDRO` row on tablet/desktop/TV via a container query on the content column. Long player
-  names wrap/shrink gracefully (`overflow-wrap: anywhere`, `text-wrap: balance`) instead of breaking
-  the layout. `src/components/PreMatchScreen.tsx` + `src/App.css` (`.prematch*`) only.
+  `JOÃO × PEDRO` row on tablet/desktop/TV. `src/components/PreMatchScreen.tsx` + `src/App.css`
+  (`.prematch*`) only.
+- **Wide-screen player alignment:** the horizontal row is a symmetric
+  `minmax(0,1fr) auto minmax(0,1fr)` grid; each player cell is its own query container and the name is
+  sized in `cqi` (relative to its own column) with `overflow-wrap: normal`, so a normal name (≈≤10
+  chars) always stays on ONE line and a single word is never split at an arbitrary character (fixes
+  `GUSTAVO` breaking into `GUSTAV`/`O` at 1920×1080 while `ANDRÉ` stayed on one line). `align-items:
+  center` keeps both names and the `×` on the same vertical center even if one name wraps; long
+  multi-word names still wrap gracefully at spaces. The phone stacked layout is unchanged.
 - **Hierarchy & color:** status → championship → phase → **players (main focus)** → format →
   date/time → countdown. Hierarchy comes from typography/size/weight/spacing/contrast; only the
   player names use the Player A/B identity colors — status, championship, phase, format, date/time

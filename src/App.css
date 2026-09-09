@@ -233,13 +233,19 @@
 }
 
 .prematch-player {
+  min-width: 0;
   max-width: 100%;
-  font-size: clamp(2.6rem, 12vw, 6.5rem);
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  /* Long names wrap/shrink gracefully instead of overflowing. */
+}
+
+.prematch-player-name {
+  display: block;
+  /* Phone base size (overridden per-column on wide screens below). */
+  font-size: clamp(2.4rem, 12vw, 5rem);
+  /* Phone may wrap long names; a single very long word may break as a last resort here only. */
   overflow-wrap: anywhere;
   text-wrap: balance;
 }
@@ -295,24 +301,35 @@
   color: var(--text);
 }
 
-/* Tablet / desktop / TV: players go horizontal (JOÃO   ×   PEDRO) with more breathing room. Uses a
-   container query on the bounded content column so it reflects real available width, not just the
-   raw viewport. */
+/* Tablet / desktop / TV: players go horizontal (JOÃO   ×   PEDRO) in a symmetric three-track grid so
+   both names get equal space and stay centered around the `×`. A container query on the bounded
+   content column reflects the real available width.
+
+   Sizing contract that fixes the "GUSTAVO → GUSTAV / O" bug: each player cell is its OWN query
+   container (`container-type: inline-size`), and the name is sized in `cqi` — i.e. relative to its
+   own column width — so the font shrinks with the column instead of overflowing it. The coefficient
+   is tuned so a normal name (~up to 10 characters) fits on ONE line, and `overflow-wrap: normal`
+   means a single word is NEVER split at an arbitrary character. Multi-word long names still wrap
+   gracefully at spaces. `minmax(0, 1fr)` keeps Player A / Player B tracks symmetric and prevents a
+   long name from stealing width from the other side; `align-items: center` keeps both names and the
+   `×` on the same vertical center regardless of one name wrapping to two lines. */
 @container (min-width: 620px) {
   .prematch-players {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: clamp(20px, 4cqw, 72px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(16px, 3cqw, 56px);
   }
   .prematch-player {
-    flex: 1 1 0;
-    min-width: 0;
+    container-type: inline-size;
+    justify-self: stretch;
     text-align: center;
-    font-size: clamp(3rem, 11cqw, 7rem);
   }
-  /* Keep each name in one line when the row layout has room; it wraps again only if truly too long. */
-  .prematch-vs {
-    flex: 0 0 auto;
+  .prematch-player-name {
+    /* cqi = 1% of THIS player column's width. ~15cqi keeps ≤10-char names on one line; capped so it
+       stays large on TV without overflowing. */
+    font-size: clamp(1.75rem, 15cqi, 4.75rem);
+    overflow-wrap: normal;
   }
 }
 

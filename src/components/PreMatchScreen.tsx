@@ -36,11 +36,15 @@ export function PreMatchScreen({ scheduled }: { scheduled: ScheduledState }) {
         )}
 
         <div className="prematch-players">
-          <span className="prematch-player identity-a">{scheduled.playerAName}</span>
+          <span className="prematch-player identity-a">
+            <span className="prematch-player-name">{scheduled.playerAName}</span>
+          </span>
           <span className="prematch-vs" aria-hidden="true">
             ×
           </span>
-          <span className="prematch-player identity-b">{scheduled.playerBName}</span>
+          <span className="prematch-player identity-b">
+            <span className="prematch-player-name">{scheduled.playerBName}</span>
+          </span>
         </div>
 
         {(scheduled.matchTypeLabel || scheduled.scheduledAt !== null) && (
