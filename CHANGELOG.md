@@ -8,6 +8,24 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
+## [1.4.0] — 2026-09-09 — Visual identity aligned with spinit-track
+
+### Changed
+- **Shared visual identity with the Android app.** The web spectator now uses the same palette as
+  spinit-track (`app/.../Theme.kt`): background `#090909` (BackgroundDark), surfaces `#1B1B1B`
+  (CardSurface), text `#FFFFFF` (TextPrimary), dim `#8A8A8A` (TextSecondary), borders `#242424`
+  (DividerDark). CSS-token change in `src/index.css` — no markup/logic change.
+- **Winner banner is now the brand yellow.** `"<jogador> venceu a partida"` uses the new `--neon`
+  token (`#FCCE43`, spinit-track's Neon accent) regardless of which player won — it reads as the
+  match result, not a player-identity color (was green).
+- **Player identity colors match the app's accents:** Player A = brand yellow `#FCCE43` (was green
+  `#4dbf8b`), Player B = training blue `#29B6F6` (unchanged). Applies consistently across the LIVE
+  scoreboard, SCHEDULED pre-match, important-moment cues and Momentum lanes.
+- Primary buttons (code entry / status screens) use the brand yellow on near-black text, matching the
+  app's primary buttons. The paused-timer amber already matched spinit-track (`#FFB300`).
+- No change to the Firestore contract, mapper, scoring, timer, Momentum, winner logic, or the
+  snapshot subscription.
+
 ## [1.3.0] — 2026-09-09 — Responsive LIVE scoreboard (phone → TV)
 
 ### Changed

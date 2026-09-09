@@ -1,15 +1,20 @@
 :root {
-  --bg: #0d0f14;
-  --surface: #171a22;
-  --text: #f3f4f6;
-  --text-dim: #9ca3af;
-  --accent-a: #4dbf8b;
-  /* Player B identity. Blue (the app's Training accent #29B6F6) — a vivid, distinct hue that reads
-     clearly against the dark surface. Replaced the previous red #ff4545, which in the thin Momentum
-     bar looked dim/grey and blurred into the empty (no-momentum) track. Not yellow: the app's own
-     primary accent is already yellow, so B must stay off that hue. */
+  /* Shared visual identity with the Android app (spinit-track/app/.../Theme.kt): same dark ground,
+     surfaces, near-white text, the Neon yellow primary accent, and the training blue — so the web
+     spectator looks like the same product. */
+  --bg: #090909; /* spinit-track BackgroundDark */
+  --surface: #1b1b1b; /* spinit-track CardSurface */
+  --text: #ffffff; /* spinit-track TextPrimary */
+  --text-dim: #8a8a8a; /* spinit-track TextSecondary */
+  --border: #242424; /* spinit-track DividerDark */
+
+  /* Primary brand accent — spinit-track's Neon yellow (#FCCE43). Used for the winner and other
+     generic highlights, and as Player A's identity color. */
+  --neon: #fcce43;
+  --accent-a: var(--neon); /* Player A identity = brand yellow (matches spinit-track's accent) */
+  /* Player B identity — spinit-track's training blue (#29B6F6): a vivid, distinct hue that stays off
+     the yellow so A and B are unmistakable in the scoreboard and Momentum lanes. */
   --accent-b: #29b6f6;
-  --border: #2e303a;
 
   color-scheme: dark;
   font: 16px/1.4 system-ui, "Segoe UI", Roboto, sans-serif;

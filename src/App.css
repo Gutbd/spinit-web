@@ -35,10 +35,12 @@
   color: var(--text-dim);
 }
 
+/* Winner banner — the brand yellow (spinit-track's Neon), regardless of which player won, so it
+   reads as the match result rather than a player-identity color. */
 .scoreboard-winner {
   font-size: clamp(1.2rem, 3vw, 2.4rem);
   font-weight: 700;
-  color: var(--accent-a);
+  color: var(--neon);
 }
 
 .scoreboard-players {
@@ -543,9 +545,9 @@
   padding: 12px 20px;
   border-radius: 8px;
   border: none;
-  background: var(--accent-a);
-  color: #0d0f14;
-  font-weight: 600;
+  background: var(--neon);
+  color: #090909;
+  font-weight: 700;
 }
 
 .status-screen-hint {
