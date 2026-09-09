@@ -8,6 +8,16 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
+## [1.4.1] — 2026-09-09 — Fix duplicated TIE-BREAK label
+
+### Fixed
+- **The LIVE scoreboard showed the `TIE-BREAK` label twice** (visible at 0–0 when a tie-break starts).
+  The host already publishes `state.statusLabel` as `"TIE-BREAK"` / `"SUPER TIE-BREAK"` during a
+  tie-break, and the scoreboard rendered both that `statusLabel` **and** a separate derived tie-break
+  label. The derived label is now a fallback shown only when `statusLabel` is absent (legacy docs), so
+  the tie-break label appears exactly once. `src/components/ScoreBoard.tsx` only — no contract/logic
+  change.
+
 ## [1.4.0] — 2026-09-09 — Visual identity aligned with spinit-track
 
 ### Changed

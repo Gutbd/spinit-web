@@ -219,3 +219,39 @@ describe("ScoreBoard — responsive name rendering", () => {
     expect(container.querySelector(".player-row-a .name-text")?.textContent).toBe(longName);
   });
 });
+
+describe("ScoreBoard — tie-break label is not duplicated", () => {
+  function tieBreakDoc(statusLabel: string | null): RawLiveMatchDoc {
+    const state: Record<string, unknown> = {
+      status: "LIVE",
+      setsA: 0,
+      setsB: 0,
+      gamesA: 6,
+      gamesB: 6,
+      isTieBreak: true,
+      isSuperTieBreak: false,
+      isMatchOver: false,
+      currentServer: 0,
+      playerAName: "Ana",
+      playerBName: "Bruna",
+      pointDisplayA: "0",
+      pointDisplayB: "0",
+      recentScorers: [],
+    };
+    if (statusLabel !== null) state.statusLabel = statusLabel;
+    return { state };
+  }
+
+  it("shows the tie-break label exactly once at 0–0 when the host publishes statusLabel", () => {
+    const spectator = toSpectatorState(tieBreakDoc("TIE-BREAK"), "AB12CD34")!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    expect(screen.getAllByText(/tie-break/i)).toHaveLength(1);
+    expect(container.querySelectorAll(".scoreboard-status-label")).toHaveLength(1);
+  });
+
+  it("falls back to a single derived tie-break label for legacy docs without statusLabel", () => {
+    const spectator = toSpectatorState(tieBreakDoc(null), "AB12CD34")!;
+    render(<ScoreBoard spectator={spectator} />);
+    expect(screen.getAllByText(/tie-break/i)).toHaveLength(1);
+  });
+});

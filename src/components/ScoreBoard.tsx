@@ -67,7 +67,11 @@ export function ScoreBoard({ spectator }: { spectator: SpectatorState }) {
         <div className="scoreboard-status-label">{spectator.statusLabel}</div>
       )}
 
-      {(spectator.isTieBreak || spectator.isSuperTieBreak) && !finished && (
+      {/* Tie-break label — the host's statusLabel already reads "TIE-BREAK"/"SUPER TIE-BREAK" during a
+          tie-break (MatchState.statusLabel), so this dedicated label is a fallback for legacy docs that
+          omit statusLabel. Gated on `!statusLabel` to avoid showing the tie-break label twice (the
+          duplicate-label bug seen at 0–0). */}
+      {(spectator.isTieBreak || spectator.isSuperTieBreak) && !finished && !spectator.statusLabel && (
         <div className="scoreboard-status-label">
           {spectator.isSuperTieBreak ? "Super Tie-Break" : "Tie-Break"}
         </div>
