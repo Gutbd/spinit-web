@@ -103,7 +103,7 @@ function PlayerRow({
     <div className={`player-row player-row-${identity}`}>
       <span className={`player-name col-name identity-${identity}`}>
         {serving && <span className="serving-dot" aria-label="Sacando" />}
-        {name}
+        <span className="name-text">{name}</span>
       </span>
       <span className="player-points col-stat">{points}</span>
       <span className="player-games col-stat">{games}</span>

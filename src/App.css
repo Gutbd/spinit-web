@@ -17,23 +17,34 @@
   width: 100%;
 }
 
+/* The LIVE scoreboard is a public sports display, not a narrow mobile card: it fills the viewport,
+   scales its typography fluidly (phone → TV), and uses a wider bounded content column so it never
+   floats tiny in the center of a television. Kept visually continuous with the SCHEDULED pre-match
+   board (same centered, bounded, safely-padded composition) so SCHEDULED → LIVE feels seamless on a
+   big screen. `.code-entry`/`.status-screen` keep the narrower 720px above. */
+.scoreboard {
+  max-width: min(1000px, 94vw);
+  gap: clamp(14px, 3vh, 40px);
+  padding: clamp(20px, 5vh, 64px) clamp(16px, 4vw, 64px);
+}
+
 .scoreboard-brand {
-  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-  letter-spacing: 0.08em;
+  font-size: clamp(0.85rem, 1.4vw, 1.15rem);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
 
 .scoreboard-winner {
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-  font-weight: 600;
+  font-size: clamp(1.2rem, 3vw, 2.4rem);
+  font-weight: 700;
   color: var(--accent-a);
 }
 
 .scoreboard-players {
   width: 100%;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: clamp(12px, 1.4vw, 20px);
   overflow: hidden;
   background: var(--surface);
 }
@@ -63,25 +74,34 @@
 }
 
 .scoreboard-header .col-stat {
-  font-size: clamp(0.65rem, 1.4vw, 0.8rem);
-  letter-spacing: 0.06em;
+  font-size: clamp(0.62rem, 1.2vw, 0.95rem);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
   text-align: center;
   min-width: 2.5ch;
 }
 
+/* Player names — priority 1 (large, one line). nowrap + ellipsis degrades a too-long name gracefully
+   (never an arbitrary mid-word character break); the fluid size keeps normal names readable from a
+   distance on TV. min-width:0 lets the name cell shrink so it never pushes the score columns. */
 .player-name {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: clamp(1rem, 2.4vw, 1.4rem);
-  font-weight: 600;
+  gap: clamp(8px, 0.9vw, 16px);
+  font-size: clamp(1.05rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   text-align: left;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.player-name > .name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Per-player color identity — the same accent marks the name here and the player's Momentum lane. */
@@ -93,10 +113,11 @@
   color: var(--accent-b);
 }
 
+/* Server indicator — scales with the player name so it stays obvious from a distance on TV. */
 .serving-dot {
   flex-shrink: 0;
-  width: 0.5em;
-  height: 0.5em;
+  width: 0.55em;
+  height: 0.55em;
   border-radius: 50%;
   background: currentColor;
 }
@@ -108,31 +129,37 @@
   text-align: center;
 }
 
+/* Sets/games — clearly visible but visually secondary to the current point score. */
 .player-sets,
 .player-games {
-  font-size: clamp(1rem, 2.4vw, 1.4rem);
+  font-size: clamp(1rem, 2.4vw, 1.9rem);
   color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
+/* Current point score — priority 2, one of the largest elements on the screen (bigger than the
+   names and much bigger than sets/games), so the live score reads instantly from across a venue. */
 .player-points {
-  font-size: clamp(1.4rem, 4vw, 2.4rem);
-  font-weight: 700;
+  font-size: clamp(1.5rem, 6.5vw, 4rem);
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
   min-width: 2.5ch;
   text-align: center;
 }
 
+/* Generic match-state label (DEUCE / TIE-BREAK / ADV) — neutral, never a player identity color. */
 .scoreboard-status-label {
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
-  color: var(--accent-b);
-  letter-spacing: 0.04em;
+  font-size: clamp(0.9rem, 2vw, 1.5rem);
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-/* Host-authoritative match clock. Compact, tabular so digits don't jitter while ticking. The
-   paused variant is visibly amber so a frozen clock reads as intentionally paused, not stuck. */
+/* Host-authoritative match clock — priority 5. Readable on TV but kept below the names/score so it
+   never competes. Tabular so digits don't jitter; amber when paused. */
 .scoreboard-timer {
-  font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+  font-size: clamp(0.9rem, 1.9vw, 1.55rem);
   letter-spacing: 0.06em;
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
@@ -335,14 +362,16 @@
 
 /* Contextual pressure-moment banner — only rendered when a moment exists, so it never reserves
    permanent space. Border/text take the highlighted player's identity color. */
+/* Important moment (break/set/match point) — priority 6, a key situation cue kept readable on TV but
+   still below the names/score. Border/text take the highlighted player's identity color. */
 .important-moment {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 18px);
+  padding: clamp(6px, 1.5vw, 12px) clamp(12px, 3vw, 22px);
   border-radius: 999px;
   border: 1px solid currentColor;
-  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  font-size: clamp(0.85rem, 2vw, 1.4rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -360,10 +389,11 @@
   opacity: 0.6;
 }
 
-/* Complementary per-set history — secondary to the main scoreboard, not a replacement. */
+/* Complementary per-set history — priority 7, secondary to the main scoreboard, not a replacement.
+   Deliberately bounded (never full TV width) so it can't compete with the names/score above. */
 .set-history {
   width: 100%;
-  max-width: 420px;
+  max-width: min(480px, 100%);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -405,9 +435,11 @@
   font-weight: 600;
 }
 
+/* Momentum — priority 7, intentionally bounded so it stays secondary and never competes visually
+   with the actual scoreboard (spec). */
 .momentum {
   width: 100%;
-  max-width: 420px;
+  max-width: min(480px, 100%);
   display: flex;
   flex-direction: column;
   gap: 6px;

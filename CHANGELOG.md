@@ -8,6 +8,33 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
+## [1.3.0] — 2026-09-09 — Responsive LIVE scoreboard (phone → TV)
+
+### Changed
+- **LIVE scoreboard optimized as a responsive public sports display.** Visual/responsive only — no
+  change to the Firestore contract, mapper semantics, scoring, timer, Momentum, winner logic, or the
+  snapshot subscription. Applies the same philosophy as the SCHEDULED pre-match board so
+  `SCHEDULED → LIVE` feels continuous on a big screen.
+  - **Container:** the scoreboard now fills the viewport and uses a wider bounded content column
+    (`max-width: min(1000px, 94vw)`, was a fixed 720px card) with safe `vh/vw` padding, so it no
+    longer floats as a narrow mobile card on a TV. `.code-entry`/`.status-screen` keep the 720px width.
+  - **Hierarchy (fluid `clamp()` scaling):** current point score is now one of the largest elements
+    (`clamp(1.5rem, 6.5vw, 4rem)`), player names are large and priority-1
+    (`clamp(1.05rem, 3vw, 2.6rem)`), sets/games stay clearly visible but secondary
+    (`clamp(1rem, 2.4vw, 1.9rem)`), and the timer/labels stay readable but subordinate. Readable from
+    several meters on 1920×1080.
+  - **Player names:** kept on one line with `min-width:0` + `nowrap` + ellipsis (graceful degradation,
+    never an arbitrary mid-word character break); full name preserved in the DOM (`.name-text`
+    wrapper) even when visually truncated. A/B rows are symmetric.
+  - **Server indicator** scales with the name (`0.55em`) so it's obvious from a distance.
+  - **Colors:** the generic match-state label (DEUCE / TIE-BREAK / ADV) is now a neutral theme color
+    instead of the Player B blue — player identity colors are reserved for the player names/Momentum
+    lanes. No new accent colors.
+  - **Secondary info bounded:** Momentum and per-set history stay capped (`min(480px, 100%)`) so they
+    never compete with the names/score on a large display.
+  - `src/App.css` (`.scoreboard*`, `.player-*`, `.momentum`, `.set-history`, `.important-moment`) and
+    one presentation-only DOM tweak in `src/components/ScoreBoard.tsx` (name wrapped in `.name-text`).
+
 ## [1.2.0] — 2026-09-08 — Scheduled (pre-match) view
 
 ### Added

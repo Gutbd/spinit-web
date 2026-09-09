@@ -176,3 +176,46 @@ describe("ScoreBoard — FEATURE-007.1 clarity", () => {
     expect(rowB.querySelector(".player-sets")?.textContent).toBe("0");
   });
 });
+
+describe("ScoreBoard — responsive name rendering", () => {
+  function liveDoc(playerAName: string, playerBName: string): RawLiveMatchDoc {
+    return {
+      state: {
+        status: "LIVE",
+        setsA: 1,
+        setsB: 0,
+        gamesA: 4,
+        gamesB: 3,
+        isTieBreak: false,
+        isSuperTieBreak: false,
+        isMatchOver: false,
+        currentServer: 0,
+        playerAName,
+        playerBName,
+        pointDisplayA: "30",
+        pointDisplayB: "15",
+        recentScorers: [0, 1],
+        completedSets: [],
+      },
+    };
+  }
+
+  it.each([
+    ["GUSTAVO", "ANDRÉ"],
+    ["FERNANDO", "GABRIEL"],
+  ])("keeps normal player names in the DOM as a single text node: %s × %s", (a, b) => {
+    const spectator = toSpectatorState(liveDoc(a, b), "AB12CD34")!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    // Names live in a dedicated .name-text wrapper (ellipsis target) — full name preserved in the DOM
+    // even when visually truncated by CSS on a narrow column.
+    const names = Array.from(container.querySelectorAll(".player-name .name-text")).map((n) => n.textContent);
+    expect(names).toEqual([a, b]);
+  });
+
+  it("preserves a long player name in the DOM (graceful CSS ellipsis, not dropped)", () => {
+    const longName = "Maximiliano Alexandre de Albuquerque";
+    const spectator = toSpectatorState(liveDoc(longName, "André"), "AB12CD34")!;
+    const { container } = render(<ScoreBoard spectator={spectator} />);
+    expect(container.querySelector(".player-row-a .name-text")?.textContent).toBe(longName);
+  });
+});
