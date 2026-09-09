@@ -513,11 +513,20 @@
   color: var(--accent-b);
 }
 
+/* Persistent player lanes: Player A owns the LEFT half (a faint yellow rectangle under A's name),
+   Player B the RIGHT half (faint grey) — so each player's side always carries their color, matching
+   the labels. The brighter leader fill (below) grows over the lane toward whoever has the momentum. */
 .momentum-track {
   position: relative;
   height: 10px;
   border-radius: 999px;
-  background: var(--surface);
+  background:
+    linear-gradient(
+      to right,
+      rgba(252, 206, 67, 0.22) 0 50%,
+      rgba(136, 136, 136, 0.22) 50% 100%
+    ),
+    var(--surface);
   border: 1px solid var(--border);
   overflow: hidden;
 }

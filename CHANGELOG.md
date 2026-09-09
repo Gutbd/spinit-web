@@ -18,6 +18,11 @@ mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be update
   header hidden). `src/contract/{types,mapper}.ts`, `src/components/ScoreBoard.tsx`, `src/App.css`.
 
 ### Changed
+- **Momentum shows each player's persistent colored lane.** Player A's half of the Momentum bar is now
+  a persistent faint-yellow rectangle (under A's yellow name) and Player B's half a faint grey one, so
+  each player's side always carries their color — not only when they hold the momentum. The brighter
+  leader fill still grows over the lane toward whoever leads. (Player A name/fill were already the
+  brand yellow; this makes A's *side* visibly yellow at all times.)
 - **Tie-break is now match context, not a tag below the score.** A tie-break-only match shows its
   format label in the header; a set tie-break (6–6 inside a normal match) shows a small "Tie-break" /
   "Super Tie-break" context tag in the header (deduped against the format label via `matchType`). The
