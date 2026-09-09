@@ -18,9 +18,15 @@ mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be update
 - **Winner banner is now the brand yellow.** `"<jogador> venceu a partida"` uses the new `--neon`
   token (`#FCCE43`, spinit-track's Neon accent) regardless of which player won — it reads as the
   match result, not a player-identity color (was green).
-- **Player identity colors match the app's accents:** Player A = brand yellow `#FCCE43` (was green
-  `#4dbf8b`), Player B = training blue `#29B6F6` (unchanged). Applies consistently across the LIVE
-  scoreboard, SCHEDULED pre-match, important-moment cues and Momentum lanes.
+- **Player names are neutral white, like the app.** spinit-track uses a single accent: player names
+  are white and yellow is only a highlight. Web player names (LIVE scoreboard + SCHEDULED pre-match)
+  are now `--text` white (were green/blue); the serving indicator is the brand yellow dot; the A/B
+  distinction comes from row position, the serving dot and the Momentum lanes.
+- **Momentum colors match spinit-track's Live spectator:** Player A = brand yellow `#FCCE43`,
+  Player B = neutral grey `#555555` (was blue — the blue `#29B6F6` is the app's *Training* accent, not
+  a match-player color, so it was dropped).
+- **Important moments (break/set/match point) are the brand yellow**, matching the app (never a
+  per-player hue); the player is named in the banner text.
 - Primary buttons (code entry / status screens) use the brand yellow on near-black text, matching the
   app's primary buttons. The paused-timer amber already matched spinit-track (`#FFB300`).
 - No change to the Firestore contract, mapper, scoring, timer, Momentum, winner logic, or the

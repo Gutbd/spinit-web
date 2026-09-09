@@ -106,22 +106,22 @@
   text-overflow: ellipsis;
 }
 
-/* Per-player color identity — the same accent marks the name here and the player's Momentum lane. */
-.player-name.identity-a {
-  color: var(--accent-a);
-}
-
+/* Player names are neutral (white), matching spinit-track — the app colors names white and uses the
+   brand yellow only as a highlight (server dot, winner). The A/B distinction comes from row position,
+   the yellow serving dot, and the Momentum lanes, not from tinting each name. */
+.player-name.identity-a,
 .player-name.identity-b {
-  color: var(--accent-b);
+  color: var(--text);
 }
 
-/* Server indicator — scales with the player name so it stays obvious from a distance on TV. */
+/* Server indicator — the brand yellow (spinit-track's serving dot), scaled with the player name so
+   it stays obvious from a distance on TV even though the name itself is neutral white. */
 .serving-dot {
   flex-shrink: 0;
   width: 0.55em;
   height: 0.55em;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--neon);
 }
 
 .player-sets,
@@ -279,12 +279,10 @@
   text-wrap: balance;
 }
 
-.prematch-player.identity-a {
-  color: var(--accent-a);
-}
-
+/* Pre-match player names are neutral white too (matching spinit-track's scheduled-match detail). */
+.prematch-player.identity-a,
 .prematch-player.identity-b {
-  color: var(--accent-b);
+  color: var(--text);
 }
 
 .prematch-vs {
@@ -379,12 +377,11 @@
   text-transform: uppercase;
 }
 
-.important-moment-a {
-  color: var(--accent-a);
-}
-
+/* Break/Set/Match point — always the brand yellow (spinit-track shows important moments in Neon,
+   never a per-player hue); the player is identified by the banner text, not by color. */
+.important-moment-a,
 .important-moment-b {
-  color: var(--accent-b);
+  color: var(--neon);
 }
 
 .important-moment-sep {
@@ -465,7 +462,8 @@
   font-weight: 600;
 }
 
-/* Momentum lane identity matches the scoreboard: green = Player A (left), blue = Player B (right). */
+/* Momentum lanes match spinit-track's Live spectator: Player A = brand yellow (left), Player B =
+   neutral grey (right). */
 .momentum-label-a {
   color: var(--accent-a);
 }
@@ -498,8 +496,8 @@
   bottom: 0;
 }
 
-/* Color only. The fill's side (which half of the track it grows into) is set inline by
-   MomentumMeter so it always follows the leading player's own label — see the component. */
+/* Color only (yellow = A, grey = B, matching spinit-track). The fill's side (which half of the track
+   it grows into) is set inline by MomentumMeter so it always follows the leading player's own label. */
 .momentum-fill-a {
   background: var(--accent-a);
 }
