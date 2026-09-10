@@ -1,17 +1,17 @@
 import { toSpectatorMomentum } from "../contract/momentum";
+import { momentumCircles } from "../contract/momentumVisual";
 
 /**
- * Compact V1 Momentum visual (Part 4 §15 / FEATURE-007.1) — a horizontal balance bar, not the full
- * growing FEATURE-005 chart. Semantics are unchanged (locked, D2): scorer 0 (A) = +1, scorer 1 (B)
- * = -1, folded over the last-5 `recentScorers`, range [-5, +5].
+ * Unified five-circle Momentum visual — identical, circle-for-circle, to spinit-track's Live
+ * viewer (`CompactMomentumCard`). Momentum semantics are unchanged (locked, D2): scorer 0 (A) =
+ * +1, scorer 1 (B) = -1, folded over the last-5 `recentScorers`, range [-5, +5]. The domain →
+ * five-state mapping lives in the shared `momentumCircles` contract (momentumVisual.ts), so
+ * Android and Web can never silently diverge.
  *
- * Visual identity follows the PLAYER, not a fixed side of the bar (matching spinit-track): Player A
- * owns the brand yellow (`--accent-a`) and the LEFT half of the track — a persistent faint-yellow
- * lane under Player A's own label; Player B owns neutral grey (`--accent-b`) and the RIGHT half. So
- * when A leads (positive) the bar grows leftward toward A's name, and when B leads (negative) it grows
- * rightward toward B's name. The fill's `momentum-fill-{a,b}` class carries both the color and (via
- * CSS) the correct side; the FEATURE-007.1 fix corrected a prior inversion where A's fill grew toward
- * B's label.
+ * Exactly five fixed circles exist from match start (neutral = center only). There is ONE momentum
+ * value: it fills OUTWARD from the always-active center toward the leading player. The active color
+ * is the brand Neon yellow and means "momentum" — NOT a player. Direction is communicated purely by
+ * which side of the center fills; both player names are the SAME neutral color.
  */
 export function MomentumMeter({
   recentScorers,
@@ -23,18 +23,7 @@ export function MomentumMeter({
   playerBName: string;
 }) {
   const value = toSpectatorMomentum(recentScorers);
-  const magnitudePct = (Math.abs(value) / 5) * 50;
-  const leader = value === 0 ? null : value > 0 ? "a" : "b";
-
-  // The fill grows from center toward the LEADING player's own label. Player A's label is on the
-  // left, so A's fill anchors its right edge at center and grows left; Player B's label is on the
-  // right, so B's fill anchors its left edge at center and grows right. Keeping the side here (not
-  // split across two mirrored CSS rules) is what makes the direction unit-testable and is the
-  // FEATURE-007.1 fix for the earlier inversion.
-  const fillStyle =
-    leader === "a"
-      ? { right: "50%", width: `${magnitudePct}%` }
-      : { left: "50%", width: `${magnitudePct}%` };
+  const circles = momentumCircles(value);
 
   return (
     <div
@@ -43,19 +32,18 @@ export function MomentumMeter({
       aria-label={`Momentum, últimos 5 pontos: ${describeMomentum(value, playerAName, playerBName)}`}
     >
       <div className="momentum-title">Momentum — últimos 5 pontos</div>
-      <div className="momentum-labels">
-        <span className="momentum-label momentum-label-a">{playerAName}</span>
-        <span className="momentum-label momentum-label-b">{playerBName}</span>
-      </div>
-      <div className="momentum-track">
-        <div className="momentum-center" />
-        {leader && (
-          <div
-            className={`momentum-fill momentum-fill-${leader}`}
-            data-leader={leader}
-            style={fillStyle}
-          />
-        )}
+      <div className="momentum-row">
+        <span className="momentum-label">{playerAName}</span>
+        <div className="momentum-circles">
+          {circles.map((active, i) => (
+            <span
+              key={i}
+              className={`momentum-dot${active ? " momentum-dot-active" : ""}`}
+              data-active={active}
+            />
+          ))}
+        </div>
+        <span className="momentum-label">{playerBName}</span>
       </div>
     </div>
   );

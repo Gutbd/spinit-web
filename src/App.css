@@ -493,67 +493,46 @@
   text-align: center;
 }
 
-.momentum-labels {
+/* One row: neutral Player A name · five fixed circles · neutral Player B name. Both names use the
+   SAME neutral color — the yellow means "momentum", not a player identity (unified with spinit-track's
+   Live viewer). */
+.momentum-row {
   display: flex;
-  justify-content: space-between;
-  font-size: clamp(0.75rem, 1.6vw, 0.9rem);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2.4vw, 20px);
 }
 
 .momentum-label {
   font-weight: 600;
+  font-size: clamp(0.75rem, 1.6vw, 0.9rem);
+  color: var(--text-dim);
+  white-space: nowrap;
 }
 
-/* Momentum lanes match spinit-track's Live spectator: Player A = brand yellow (left), Player B =
-   neutral grey (right). */
-.momentum-label-a {
-  color: var(--accent-a);
+/* Exactly five fixed circle positions, always present. Center is always active; momentum fills
+   outward from it toward the leading player. The component never grows or shrinks — only the
+   active/inactive state of these circles changes. */
+.momentum-circles {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.6vw, 12px);
 }
 
-.momentum-label-b {
-  color: var(--accent-b);
-}
-
-/* Persistent player lanes: Player A owns the LEFT half (a faint yellow rectangle under A's name),
-   Player B the RIGHT half (faint grey) — so each player's side always carries their color, matching
-   the labels. The brighter leader fill (below) grows over the lane toward whoever has the momentum. */
-.momentum-track {
-  position: relative;
-  height: 10px;
+.momentum-dot {
+  width: clamp(10px, 1.8vw, 16px);
+  height: clamp(10px, 1.8vw, 16px);
   border-radius: 999px;
-  background:
-    linear-gradient(
-      to right,
-      rgba(252, 206, 67, 0.22) 0 50%,
-      rgba(136, 136, 136, 0.22) 50% 100%
-    ),
-    var(--surface);
+  box-sizing: border-box;
+  /* Inactive: neutral outline only, no fill. */
   border: 1px solid var(--border);
-  overflow: hidden;
+  background: transparent;
 }
 
-.momentum-center {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--border);
-}
-
-.momentum-fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-}
-
-/* Color only (yellow = A, grey = B, matching spinit-track). The fill's side (which half of the track
-   it grows into) is set inline by MomentumMeter so it always follows the leading player's own label. */
-.momentum-fill-a {
-  background: var(--accent-a);
-}
-
-.momentum-fill-b {
-  background: var(--accent-b);
+/* Active: the single momentum color — brand Neon yellow. */
+.momentum-dot-active {
+  border-color: var(--neon);
+  background: var(--neon);
 }
 
 .stale-banner {

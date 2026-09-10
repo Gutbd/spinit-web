@@ -8,6 +8,21 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
+## [1.6.0] — Unified five-circle Momentum visual (shared with spinit-track)
+
+### Changed
+- **Momentum is now a fixed five-circle scale**, identical circle-for-circle to spinit-track's Live
+  viewer, replacing the horizontal balance bar. All five positions exist from the start (neutral =
+  center only, `○ ○ ● ○ ○`) — the component never grows, shrinks or shifts. There is one momentum
+  value: it fills **outward from the always-active center** toward the leading player, returning
+  through neutral before filling the other side (A and B never fill simultaneously). The active
+  color is the single brand Neon yellow and means "momentum", not a player — **both player names now
+  use the same neutral color**. The domain→visual mapping lives in a new shared contract
+  `src/contract/momentumVisual.ts` (mirroring Android's `MomentumVisual.kt`), covered by lock-step
+  tests so the platforms cannot diverge. Momentum semantics (`toSpectatorMomentum`, rolling last-5,
+  range `[-5, +5]`) and the Firestore contract are untouched. `src/components/MomentumMeter.tsx`,
+  `src/App.css`.
+
 ## [1.5.0] — 2026-09-09 — Match-info header above the score; tie-break is match context
 
 ### Added
