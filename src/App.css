@@ -535,6 +535,15 @@
   background: var(--neon);
 }
 
+/* Secondary context sentence below the circles — smaller than the player-name labels, neutral,
+   centered. Fixed line height so the row never jumps when the text changes. */
+.momentum-context {
+  font-size: clamp(0.65rem, 1.4vw, 0.8rem);
+  line-height: 1.2;
+  color: var(--text-dim);
+  text-align: center;
+}
+
 .stale-banner {
   font-size: 0.85rem;
   color: var(--text-dim);

@@ -1,5 +1,5 @@
 import { toSpectatorMomentum } from "../contract/momentum";
-import { momentumCircles } from "../contract/momentumVisual";
+import { momentumCircles, momentumContextCopy } from "../contract/momentumVisual";
 
 /**
  * Unified five-circle Momentum visual — identical, circle-for-circle, to spinit-track's Live
@@ -45,6 +45,8 @@ export function MomentumMeter({
         </div>
         <span className="momentum-label">{playerBName}</span>
       </div>
+      {/* Secondary context sentence — derived from the SAME visual state as the circles. */}
+      <div className="momentum-context">{momentumContextCopy(value, playerAName, playerBName)}</div>
     </div>
   );
 }

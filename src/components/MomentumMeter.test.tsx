@@ -59,6 +59,19 @@ describe("MomentumMeter — unified five-circle visual", () => {
     );
   });
 
+  it.each([
+    { scorers: [] as number[], text: "Momento equilibrado" },
+    { scorers: [A], text: "Momento favorável a Ana" },
+    { scorers: [A, A, A], text: "Ana domina o momento" },
+    { scorers: [B], text: "Momento favorável a Bruna" },
+    { scorers: [B, B, B], text: "Bruna domina o momento" },
+  ])("renders the context sentence for $scorers", ({ scorers, text }) => {
+    const { container } = render(
+      <MomentumMeter recentScorers={scorers} playerAName="Ana" playerBName="Bruna" />,
+    );
+    expect(container.querySelector(".momentum-context")?.textContent).toBe(text);
+  });
+
   it("keeps a descriptive aria-label", () => {
     expect(renderMeter([A, A, A, A, A]).ariaLabel).toContain("Ana +5");
     expect(renderMeter([B, B, B, B, B]).ariaLabel).toContain("Bruna +5");

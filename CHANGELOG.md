@@ -10,6 +10,14 @@ mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be update
 
 ## [1.6.0] — Unified five-circle Momentum visual (shared with spinit-track)
 
+### Added
+- **Momentum context sentence below the circles.** A short, neutral, centered sentence now sits under
+  the Momentum circles: `Momento equilibrado` (neutral), `Momento favorável a {jogador}`
+  (weak/moderate), or `{jogador} domina o momento` (maximum). It is derived from
+  `momentumContextCopy(value, ...)` which reads the exact same `momentumCircles(value)` visual state,
+  so the copy and the circles can never disagree; spinit-track mirrors it in `MomentumVisual.contextCopy`.
+  `src/contract/momentumVisual.ts`, `src/components/MomentumMeter.tsx`, `src/App.css`.
+
 ### Changed
 - **Momentum is now a fixed five-circle scale**, identical circle-for-circle to spinit-track's Live
   viewer, replacing the horizontal balance bar. All five positions exist from the start (neutral =

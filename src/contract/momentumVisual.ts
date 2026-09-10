@@ -41,3 +41,25 @@ export function momentumCircles(value: number): boolean[] {
   }
   return active;
 }
+
+/**
+ * Short context sentence shown below the circles. Derived from the EXACT same visual state as
+ * `momentumCircles` (it reads `momentumCircles(value)` directly) so the copy and the circles can
+ * never disagree. Mirrors spinit-track's `MomentumVisual.contextCopy` (MomentumVisual.kt) word-for-word.
+ *
+ *   neutral          -> "Momento equilibrado"
+ *   weaker toward X   -> "Momento favorável a {X}"
+ *   maximum toward X  -> "{X} domina o momento"
+ */
+export function momentumContextCopy(
+  value: number,
+  playerAName: string,
+  playerBName: string,
+): string {
+  const c = momentumCircles(value);
+  if (c[0]) return `${playerAName} domina o momento`; // A maximum (both A circles)
+  if (c[1]) return `Momento favorável a ${playerAName}`; // A weaker (inner A circle only)
+  if (c[4]) return `${playerBName} domina o momento`; // B maximum (both B circles)
+  if (c[3]) return `Momento favorável a ${playerBName}`; // B weaker (inner B circle only)
+  return "Momento equilibrado"; // center only
+}

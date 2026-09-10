@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { MOMENTUM_CENTER_INDEX, momentumCircles } from "./momentumVisual";
+import {
+  MOMENTUM_CENTER_INDEX,
+  momentumCircles,
+  momentumContextCopy,
+} from "./momentumVisual";
 
 /**
  * Contract tests for the shared five-circle Momentum mapping. These MUST stay in lock-step with
@@ -73,6 +77,36 @@ describe("momentumCircles — shared five-circle mapping", () => {
       const fillB = (c[3] ? 1 : 0) + (c[4] ? 1 : 0);
       expect(fillB).toBeGreaterThanOrEqual(prevB);
       prevB = fillB;
+    }
+  });
+
+  it.each([
+    [0, "Momento equilibrado"],
+    [1, "Momento favorável a Gustavo"],
+    [2, "Momento favorável a Gustavo"],
+    [3, "Gustavo domina o momento"],
+    [5, "Gustavo domina o momento"],
+    [-1, "Momento favorável a André"],
+    [-2, "Momento favorável a André"],
+    [-3, "André domina o momento"],
+    [-5, "André domina o momento"],
+  ])("context copy for value %i", (value, expected) => {
+    expect(momentumContextCopy(value, "Gustavo", "André")).toBe(expected);
+  });
+
+  it("context copy resolves from the same state as the circles", () => {
+    for (let v = -5; v <= 5; v++) {
+      const c = momentumCircles(v);
+      const expected = c[0]
+        ? "A domina o momento"
+        : c[1]
+          ? "Momento favorável a A"
+          : c[4]
+            ? "B domina o momento"
+            : c[3]
+              ? "Momento favorável a B"
+              : "Momento equilibrado";
+      expect(momentumContextCopy(v, "A", "B")).toBe(expected);
     }
   });
 
