@@ -166,3 +166,12 @@ firebase target:apply hosting live spinit-live --project spinit-ddc64
   a shared link) can view that match. `live_matches` documents currently have no TTL/expiry
   (accepted V1 residual risk, tracked in the FEATURE-007 planning docs — not re-litigated here).
 - The Firebase Web `apiKey` in `.env.local`/deployed config is public by design, not a secret.
+
+## Branding
+
+The favicon / app icons and the subtle spectator brand mark are derived from the official SpinIt
+Track logo (`spinit-track`'s canonical `branding/logoNovo.png`). Assets live in `public/`:
+`favicon-16x16.png` / `favicon-32x32.png` / `icon-192.png` / `icon-512.png` / `apple-touch-icon.png`
+(compact symbol, referenced from `index.html`) and `brand-logo.png` (full logo, shown low-opacity at
+the top of the SCHEDULED / LIVE / FINISHED states in `LivePage`). Do not redesign the logo; regenerate
+derived assets from the canonical source.

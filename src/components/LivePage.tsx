@@ -7,6 +7,17 @@ import { ScoreBoard } from "./ScoreBoard";
 import { PreMatchScreen } from "./PreMatchScreen";
 import { ConnectingScreen, ErrorScreen, InvalidCodeScreen, NotFoundScreen } from "./StatusScreens";
 
+/** Subtle official brand mark shown across SCHEDULED / LIVE / FINISHED spectator states. Decorative
+ * and non-interactive; the canonical artwork lives in `public/brand-logo.png` (derived from the
+ * official `logoNovo.png`). */
+function BrandMark() {
+  return (
+    <div className="brand-mark">
+      <img src="/brand-logo.png" alt="SpinIt Track" />
+    </div>
+  );
+}
+
 /** `/live/{shareCode}` — validates the code shape locally first (no Firestore query, and no
  * Firebase initialization at all, for a malformed code, per §10) before subscribing. */
 export function LivePage({ rawCode, onBack }: { rawCode: string; onBack: () => void }) {
@@ -35,6 +46,7 @@ function ConnectedLivePage({ shareCode, onBack }: { shareCode: string; onBack: (
     case "scheduled":
       return (
         <>
+          <BrandMark />
           {state.fromCache && (
             <div className="stale-banner" role="status">
               Reconectando…
@@ -47,6 +59,7 @@ function ConnectedLivePage({ shareCode, onBack }: { shareCode: string; onBack: (
     case "finished":
       return (
         <>
+          <BrandMark />
           {state.fromCache && (
             <div className="stale-banner" role="status">
               Reconectando…

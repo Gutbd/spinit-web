@@ -591,3 +591,22 @@
   font-size: 0.9rem;
 }
 
+
+/* Subtle official brand mark across SCHEDULED / LIVE / FINISHED spectator states (LivePage). Fixed
+   at the top-center so it never disturbs the vertically-centered board; decorative, non-interactive.
+   Artwork derived from the official logoNovo.png (public/brand-logo.png). */
+.brand-mark {
+  position: fixed;
+  top: clamp(8px, 2vh, 22px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.brand-mark img {
+  height: clamp(26px, 5vh, 46px);
+  width: auto;
+  display: block;
+}

@@ -8,6 +8,19 @@ This is the Web surface only. The Android host (`spinit-track`) owns the Firesto
 `live_matches/{shareCode}` contract; the Web reads it. When the Android contract changes, the
 mirror in `src/contract/` and the fixtures in `src/testFixtures/` must be updated by hand.
 
+## [1.7.0] — Official SpinIt Track branding
+
+### Added
+- **Official brand favicon / app icons.** The browser tab icon and PWA/apple-touch icons now use the
+  official SpinIt Track compact mark (tennis-ball/motion symbol) derived from `logoNovo.png`, on a
+  brand-black rounded field — `public/favicon-16x16.png`, `favicon-32x32.png`, `icon-192.png`,
+  `icon-512.png`, `apple-touch-icon.png`, referenced from `index.html` (plus a `theme-color`). The
+  previous placeholder `favicon.svg` was removed.
+- **Subtle brand mark on the spectator pages.** A small, non-interactive official logo
+  (`public/brand-logo.png`, the symbol + `SPINIT TRACK` wordmark) now sits at the top of the
+  SCHEDULED / LIVE / FINISHED states (`LivePage`), fixed and low-opacity so it never disturbs the
+  vertically-centered board.
+
 ## [1.6.0] — Unified five-circle Momentum visual (shared with spinit-track)
 
 ### Added
